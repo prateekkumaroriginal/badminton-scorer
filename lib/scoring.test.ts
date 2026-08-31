@@ -32,16 +32,8 @@ describe('badminton scoring', () => {
     expect(score).toMatchObject({ gamesB: 1, pointsA: 29, pointsB: 30 });
   });
 
-  it('keeps the finished game score until the next point', () => {
-    const finished = play(INITIAL_SCORE, 'A', 21);
-    const nextGame = scorePoint(finished, 'B');
-    expect(nextGame).toMatchObject({ gamesA: 1, pointsA: 0, pointsB: 1, gameComplete: false });
-  });
-
-  it('wins the match after two games', () => {
-    let score = play(INITIAL_SCORE, 'A', 21);
-    score = scorePoint(score, 'B');
-    score = play(score, 'A', 21);
+  it('ends the match after one game', () => {
+    const score = play(INITIAL_SCORE, 'A', 21);
     expect(score.winner).toBe('A');
   });
 });

@@ -43,8 +43,7 @@ export function scorePoint(state: ScoreState, side: Side): ScoreState {
   if (side === 'A') next.gamesA += 1;
   else next.gamesB += 1;
 
-  if (next.gamesA === 2) next.winner = 'A';
-  if (next.gamesB === 2) next.winner = 'B';
+  next.winner = side;
 
   return next;
 }

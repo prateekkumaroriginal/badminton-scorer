@@ -5,12 +5,10 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
-  Clock3,
   Download,
   History,
   LoaderCircle,
   Plus,
-  Radio,
   RotateCcw,
   Trophy,
 } from 'lucide-react';
@@ -52,22 +50,6 @@ function formatClock(milliseconds: number) {
   return hours ? `${String(hours).padStart(2, '0')}:${core}` : core;
 }
 
-function AppMark() {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="grid size-10 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-[0_8px_24px_rgb(18_83_58/20%)]">
-        <Radio className="size-5" strokeWidth={2.4} />
-      </div>
-      <div>
-        <p className="font-heading text-lg font-bold leading-none tracking-[-0.025em]">
-          Rallyframe
-        </p>
-        <p className="mt-1 text-xs font-medium text-muted-foreground">Badminton scorer</p>
-      </div>
-    </div>
-  );
-}
-
 function PageShell({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-dvh bg-background text-foreground">
@@ -94,8 +76,7 @@ function SetupScreen({
 
   return (
     <PageShell>
-      <header className="flex items-center justify-between">
-        <AppMark />
+      <header className="flex justify-end">
         <Button
           variant="ghost"
           size="icon-lg"
@@ -107,23 +88,7 @@ function SetupScreen({
         </Button>
       </header>
 
-      <section className="flex flex-1 flex-col justify-center py-12 sm:py-16">
-        <div className="mb-8">
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-court/15 bg-court-soft px-3 py-1.5 text-xs font-semibold text-court">
-            <Clock3 className="size-3.5" />
-            Timing starts with the match
-          </div>
-          <h1 className="max-w-md font-heading text-[clamp(2.45rem,10vw,4.5rem)] font-black leading-[0.94] tracking-[-0.06em]">
-            Set the sides.
-            <br />
-            Start the rally.
-          </h1>
-          <p className="mt-5 max-w-md text-base leading-7 text-muted-foreground">
-            Every point is saved with its match time, ready to export as a Filmora
-            subtitle track.
-          </p>
-        </div>
-
+      <section className="flex flex-1 flex-col justify-center py-10 sm:py-14">
         <form
           className="space-y-4"
           onSubmit={async (event) => {
@@ -177,34 +142,27 @@ function SetupScreen({
         </form>
       </section>
 
-      <footer className="flex items-center justify-between border-t pt-5 text-xs font-medium text-muted-foreground">
-        <span>Standard 21-point scoring</span>
-        <span>Best of 3</span>
-      </footer>
     </PageShell>
   );
 }
 
 function ScoreRow({
   name,
-  games,
   points,
   active,
 }: {
   name: string;
-  games: number;
   points: number;
   active: boolean;
 }) {
   return (
-    <div className="grid grid-cols-[1fr_48px_80px] items-center gap-2 border-b border-white/10 px-5 py-4 last:border-b-0">
+    <div className="grid grid-cols-[1fr_80px] items-center gap-2 border-b border-white/10 px-5 py-4 last:border-b-0">
       <div className="min-w-0">
         <div className="flex items-center gap-2">
           {active ? <span className="size-2 rounded-full bg-lime-300" aria-label="Winner" /> : null}
           <p className="truncate text-lg font-bold tracking-tight">{name}</p>
         </div>
       </div>
-      <p className="text-center font-mono text-2xl font-bold text-white/65">{games}</p>
       <p className="text-right font-mono text-5xl font-black tracking-[-0.08em]">{points}</p>
     </div>
   );
@@ -245,20 +203,13 @@ function ScoringScreen({
         </header>
 
         <section className="mt-5 overflow-hidden rounded-[28px] border border-white/10 bg-black/18 shadow-[0_22px_60px_rgb(0_0_0/22%)]">
-          <div className="grid grid-cols-[1fr_48px_80px] gap-2 border-b border-white/10 px-5 py-2 text-[10px] font-bold uppercase tracking-[0.16em] text-white/40">
-            <span>Side</span>
-            <span className="text-center">Games</span>
-            <span className="text-right">Points</span>
-          </div>
           <ScoreRow
             name={match.sideA}
-            games={match.gamesA}
             points={match.pointsA}
             active={match.winner === 'A'}
           />
           <ScoreRow
             name={match.sideB}
-            games={match.gamesB}
             points={match.pointsB}
             active={match.winner === 'B'}
           />
@@ -435,10 +386,10 @@ function HistoryScreen({
                   </h2>
                   <p className="mt-1 text-sm font-semibold text-court">
                     {match.status === 'live'
-                      ? `Live at ${match.gamesA}-${match.gamesB}, ${match.pointsA}-${match.pointsB}`
+                      ? `Live at ${match.pointsA}-${match.pointsB}`
                       : winner
-                        ? `${winner} won ${match.gamesA}-${match.gamesB}`
-                        : `Finished ${match.gamesA}-${match.gamesB}`}
+                        ? `${winner} won ${match.pointsA}-${match.pointsB}`
+                        : `Finished ${match.pointsA}-${match.pointsB}`}
                   </p>
                 </div>
                 <div

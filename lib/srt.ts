@@ -28,8 +28,8 @@ export function buildSrt(args: {
       const nextStart = events[index + 1]?.elapsedMs;
       const end = nextStart ?? Math.max(args.durationMs, event.elapsedMs + 1_000);
       const text = [
-        `${args.sideA}  |  ${event.gamesA}  |  ${event.pointsA}`,
-        `${args.sideB}  |  ${event.gamesB}  |  ${event.pointsB}`,
+        `${args.sideA}  |  ${event.pointsA}`,
+        `${args.sideB}  |  ${event.pointsB}`,
       ].join('\n');
 
       return [

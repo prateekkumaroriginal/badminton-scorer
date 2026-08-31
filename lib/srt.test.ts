@@ -21,6 +21,6 @@ describe('SRT export', () => {
 
     expect(srt).toContain('00:00:00,000 --> 00:00:32,500');
     expect(srt).toContain('00:00:32,500 --> 00:01:05,000');
-    expect(srt).toContain('Arjun  |  0  |  1');
+    expect(srt).toContain('Arjun  |  1');
   });
 });
