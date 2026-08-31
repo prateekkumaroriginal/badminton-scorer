@@ -14,6 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://rallyframe-scorer.superbanno999.chatgpt.site'),
   title: 'Rallyframe | Badminton scorer',
   description: 'Record badminton scores and export a timed SRT track for Filmora.',
   openGraph: {
