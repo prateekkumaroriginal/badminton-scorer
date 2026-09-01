@@ -588,12 +588,7 @@ function HistoryScreen({
                     void onExport(exportMatch._id, 'names-and-scores');
                   }}
                 >
-                  <span className="flex w-full items-center justify-between gap-3">
-                    <span className="font-bold">Names and scores</span>
-                    <span className="text-xs font-semibold text-muted-foreground">
-                      Current
-                    </span>
-                  </span>
+                  <span className="font-bold">Names and scores</span>
                   <span className="rounded-xl bg-muted px-3 py-2 font-mono text-sm leading-6 text-muted-foreground">
                     {exportMatch.sideA} &nbsp;|&nbsp; {exportMatch.pointsA}
                     <br />
