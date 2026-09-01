@@ -1,0 +1,1027 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scoreboard animation prototypes</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family:
+          Inter,
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          BlinkMacSystemFont,
+          'Segoe UI',
+          sans-serif;
+        background: #07110d;
+        color: #edf8f1;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        background:
+          radial-gradient(circle at 12% 0%, #15392b 0, transparent 32rem),
+          #07110d;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .page {
+        width: min(1240px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 48px 0 72px;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 30px;
+      }
+
+      h1 {
+        max-width: 720px;
+        margin: 0;
+        font-size: clamp(30px, 5vw, 56px);
+        line-height: 0.98;
+        letter-spacing: -0.055em;
+      }
+
+      .intro {
+        max-width: 660px;
+        margin: 16px 0 0;
+        color: #9db4a7;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .replay-all,
+      .replay-one {
+        border: 1px solid rgba(202, 236, 217, 0.2);
+        color: #edf8f1;
+        background: rgba(255, 255, 255, 0.07);
+        cursor: pointer;
+        transition:
+          background 150ms ease,
+          transform 150ms ease;
+      }
+
+      .replay-all {
+        flex: 0 0 auto;
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 999px;
+        font-weight: 750;
+      }
+
+      .replay-all:hover,
+      .replay-one:hover {
+        background: rgba(255, 255, 255, 0.13);
+      }
+
+      .replay-all:active,
+      .replay-one:active {
+        transform: translateY(1px);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+      }
+
+      .prototype {
+        overflow: hidden;
+        border: 1px solid rgba(202, 236, 217, 0.13);
+        border-radius: 24px;
+        background: rgba(11, 25, 19, 0.82);
+        box-shadow: 0 22px 60px rgba(0, 0, 0, 0.18);
+      }
+
+      .prototype-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 15px 17px;
+        border-bottom: 1px solid rgba(202, 236, 217, 0.1);
+      }
+
+      .prototype-title {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin: 0;
+        font-size: 14px;
+        font-weight: 800;
+      }
+
+      .number {
+        display: grid;
+        width: 30px;
+        height: 30px;
+        place-items: center;
+        border-radius: 9px;
+        color: #07110d;
+        background: #b9f5cf;
+        font-size: 13px;
+        font-weight: 900;
+      }
+
+      .replay-one {
+        min-height: 32px;
+        padding: 0 12px;
+        border-radius: 999px;
+        color: #bcd0c4;
+        font-size: 12px;
+        font-weight: 750;
+      }
+
+      .stage {
+        position: relative;
+        display: grid;
+        min-height: 240px;
+        place-items: center;
+        overflow: hidden;
+        padding: 28px 24px;
+        background:
+          linear-gradient(rgba(6, 26, 18, 0.28), rgba(6, 26, 18, 0.72)),
+          repeating-linear-gradient(
+            90deg,
+            transparent 0 70px,
+            rgba(255, 255, 255, 0.035) 70px 72px
+          ),
+          linear-gradient(135deg, #1d6a4c, #123f32);
+      }
+
+      .stage::before,
+      .stage::after {
+        position: absolute;
+        content: '';
+        pointer-events: none;
+      }
+
+      .stage::before {
+        inset: 50% 0 auto;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.22);
+      }
+
+      .stage::after {
+        inset: 0 auto 0 50%;
+        width: 2px;
+        background: rgba(255, 255, 255, 0.15);
+      }
+
+      .board {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        width: min(100%, 470px);
+        grid-template-columns: 1fr 1px 1fr;
+        align-items: stretch;
+      }
+
+      .team {
+        display: grid;
+        min-width: 0;
+        grid-template-columns: minmax(0, 1fr) 104px;
+        align-items: center;
+        gap: 12px;
+        padding: 14px;
+      }
+
+      .name {
+        overflow: hidden;
+        font-size: 13px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .score-window {
+        position: relative;
+        display: grid;
+        width: 104px;
+        height: 88px;
+        place-items: center;
+        overflow: hidden;
+      }
+
+      .score-stack {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        transform-style: preserve-3d;
+      }
+
+      .score {
+        position: absolute;
+        display: grid;
+        inset: 0;
+        place-items: center;
+        font-size: 58px;
+        font-variant-numeric: tabular-nums;
+        font-weight: 900;
+        letter-spacing: -0.06em;
+        line-height: 1;
+      }
+
+      .next,
+      .ghost {
+        opacity: 0;
+      }
+
+      .divider {
+        margin: 14px 0;
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      /* 1. Vertical roll */
+      .variant-1 .board {
+        border: 1px solid rgba(162, 225, 187, 0.33);
+        border-radius: 18px;
+        background: #071d14;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      .variant-1 .score-window {
+        border-radius: 12px;
+        background: #123426;
+        box-shadow: inset 0 0 0 1px rgba(177, 238, 201, 0.12);
+      }
+
+      .variant-1 .is-playing .changing .old {
+        animation: roll-old 650ms cubic-bezier(0.55, 0, 0.2, 1) forwards;
+      }
+
+      .variant-1 .is-playing .changing .next {
+        animation: roll-new 650ms cubic-bezier(0.55, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes roll-old {
+        to {
+          opacity: 0;
+          transform: translateY(-105%);
+        }
+      }
+
+      @keyframes roll-new {
+        from {
+          opacity: 0;
+          transform: translateY(105%);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 2. Whole tile flip */
+      .variant-2 .board {
+        border-radius: 14px;
+        color: #fff4d9;
+        background: #161512;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
+        perspective: 800px;
+      }
+
+      .variant-2 .team {
+        background: linear-gradient(180deg, #24211c, #12110f);
+      }
+
+      .variant-2 .score-window {
+        overflow: visible;
+        perspective: 500px;
+      }
+
+      .variant-2 .score-stack {
+        border: 1px solid #514a3d;
+        border-radius: 10px;
+        background: #090908;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+      }
+
+      .variant-2 .score {
+        border-radius: 10px;
+        backface-visibility: hidden;
+        background: #090908;
+      }
+
+      .variant-2 .next {
+        opacity: 1;
+        transform: rotateX(180deg);
+      }
+
+      .variant-2 .is-playing .changing .score-stack {
+        animation: whole-tile-flip 720ms cubic-bezier(0.4, 0, 0.18, 1) forwards;
+      }
+
+      @keyframes whole-tile-flip {
+        to {
+          transform: rotateX(-180deg);
+        }
+      }
+
+      /* 3. Slot reel */
+      .variant-3 .board {
+        overflow: hidden;
+        border: 2px solid #8f6335;
+        border-radius: 16px;
+        color: #25170c;
+        background: linear-gradient(180deg, #e3bb7f, #b77a3e);
+        box-shadow: 0 18px 45px rgba(41, 19, 4, 0.38);
+      }
+
+      .variant-3 .divider {
+        background: rgba(64, 34, 10, 0.28);
+      }
+
+      .variant-3 .score-window {
+        border: 3px solid #43260f;
+        border-radius: 50px;
+        color: #ffe4b8;
+        background: #1c120b;
+        box-shadow: inset 0 8px 14px rgba(0, 0, 0, 0.65);
+      }
+
+      .variant-3 .is-playing .changing .old {
+        animation: slot-old 820ms cubic-bezier(0.3, 0, 0.2, 1) forwards;
+      }
+
+      .variant-3 .is-playing .changing .ghost {
+        animation: slot-ghost 820ms linear forwards;
+      }
+
+      .variant-3 .is-playing .changing .next {
+        animation: slot-new 820ms cubic-bezier(0.3, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes slot-old {
+        to {
+          opacity: 0;
+          filter: blur(3px);
+          transform: translateY(-190%);
+        }
+      }
+
+      @keyframes slot-ghost {
+        0% {
+          opacity: 0;
+          transform: translateY(150%);
+        }
+        30% {
+          opacity: 0.55;
+        }
+        70% {
+          opacity: 0.55;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-150%);
+        }
+      }
+
+      @keyframes slot-new {
+        from {
+          opacity: 0;
+          filter: blur(3px);
+          transform: translateY(190%);
+        }
+        to {
+          opacity: 1;
+          filter: blur(0);
+          transform: translateY(0);
+        }
+      }
+
+      /* 4. Pop and settle */
+      .variant-4 .board {
+        border-radius: 24px;
+        color: #10271d;
+        background: rgba(240, 255, 246, 0.9);
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.26);
+        backdrop-filter: blur(12px);
+      }
+
+      .variant-4 .divider {
+        background: rgba(16, 39, 29, 0.15);
+      }
+
+      .variant-4 .score-window {
+        border-radius: 18px;
+        color: white;
+        background: #0b6b45;
+      }
+
+      .variant-4 .is-playing .changing .old {
+        animation: pop-old 480ms ease-out forwards;
+      }
+
+      .variant-4 .is-playing .changing .next {
+        animation: pop-new 620ms cubic-bezier(0.2, 0.9, 0.22, 1.35) forwards;
+      }
+
+      @keyframes pop-old {
+        to {
+          opacity: 0;
+          transform: scale(0.45);
+        }
+      }
+
+      @keyframes pop-new {
+        0% {
+          opacity: 0;
+          transform: scale(0.3);
+        }
+        65% {
+          opacity: 1;
+          transform: scale(1.16);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* 5. Horizontal push */
+      .variant-5 .board {
+        overflow: hidden;
+        border-radius: 6px;
+        color: white;
+        background: #063b78;
+        box-shadow: 0 16px 40px rgba(0, 22, 54, 0.4);
+      }
+
+      .variant-5 .team:first-child {
+        border-top: 5px solid #55d6ff;
+      }
+
+      .variant-5 .team:last-child {
+        border-top: 5px solid #ffc857;
+      }
+
+      .variant-5 .score-window {
+        background: #052958;
+      }
+
+      .variant-5 .is-playing .changing .old {
+        animation: push-old 620ms cubic-bezier(0.65, 0, 0.2, 1) forwards;
+      }
+
+      .variant-5 .is-playing .changing .next {
+        animation: push-new 620ms cubic-bezier(0.65, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes push-old {
+        to {
+          opacity: 0;
+          transform: translateX(-120%);
+        }
+      }
+
+      @keyframes push-new {
+        from {
+          opacity: 1;
+          transform: translateX(120%);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      /* 6. Blur dissolve */
+      .variant-6 .board {
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 15px;
+        color: #101010;
+        background: #f2f0ea;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+      }
+
+      .variant-6 .divider {
+        background: rgba(0, 0, 0, 0.18);
+      }
+
+      .variant-6 .score-window {
+        border-radius: 10px;
+        color: #f4f4f2;
+        background: #141414;
+      }
+
+      .variant-6 .is-playing .changing .old {
+        animation: dissolve-old 700ms ease forwards;
+      }
+
+      .variant-6 .is-playing .changing .next {
+        animation: dissolve-new 700ms ease forwards;
+      }
+
+      @keyframes dissolve-old {
+        to {
+          opacity: 0;
+          filter: blur(14px);
+          transform: scale(1.18);
+        }
+      }
+
+      @keyframes dissolve-new {
+        from {
+          opacity: 0;
+          filter: blur(14px);
+          transform: scale(0.82);
+        }
+        to {
+          opacity: 1;
+          filter: blur(0);
+          transform: scale(1);
+        }
+      }
+
+      /* 7. Full plate wipe */
+      .variant-7 .board {
+        border: 3px solid #f5ce3e;
+        border-radius: 8px;
+        color: #f8dc67;
+        background: #15150f;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.42);
+      }
+
+      .variant-7 .score-window {
+        border-radius: 3px;
+        color: #111108;
+        background: #f5ce3e;
+      }
+
+      .variant-7 .next {
+        opacity: 1;
+      }
+
+      .variant-7 .old {
+        z-index: 1;
+        background: #f5ce3e;
+      }
+
+      .variant-7 .is-playing .changing .old {
+        animation: plate-wipe 650ms cubic-bezier(0.7, 0, 0.2, 1) forwards;
+      }
+
+      @keyframes plate-wipe {
+        to {
+          clip-path: inset(0 0 100% 0);
+          transform: translateY(-8px);
+        }
+      }
+
+      /* 8. LED scan */
+      .variant-8 .board {
+        border: 4px solid #2b2525;
+        border-radius: 11px;
+        color: #a89b9b;
+        background:
+          repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.025) 0 1px,
+            transparent 1px 4px
+          ),
+          #0b0909;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
+      }
+
+      .variant-8 .score-window {
+        color: #ff453f;
+        background: #100a0a;
+        box-shadow: inset 0 0 18px rgba(255, 40, 35, 0.08);
+      }
+
+      .variant-8 .score {
+        font-family: 'Courier New', monospace;
+        text-shadow: 0 0 13px rgba(255, 61, 54, 0.8);
+      }
+
+      .variant-8 .score-window::after {
+        position: absolute;
+        z-index: 3;
+        inset: 0;
+        content: '';
+        opacity: 0;
+        background: linear-gradient(
+          transparent 0 42%,
+          rgba(255, 90, 75, 0.4) 50%,
+          transparent 58%
+        );
+        transform: translateY(-100%);
+      }
+
+      .variant-8 .is-playing .changing .old {
+        animation: led-old 520ms steps(4, end) forwards;
+      }
+
+      .variant-8 .is-playing .changing .next {
+        animation: led-new 520ms steps(4, end) forwards;
+      }
+
+      .variant-8 .is-playing .changing .score-window::after {
+        animation: led-scan 520ms linear forwards;
+      }
+
+      @keyframes led-old {
+        45%,
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes led-new {
+        0%,
+        44% {
+          opacity: 0;
+        }
+        45%,
+        100% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes led-scan {
+        15% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(100%);
+        }
+      }
+
+      /* 9. Drop and bounce */
+      .variant-9 .board {
+        border-radius: 18px;
+        color: #23322d;
+        background: #e8f0df;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
+      }
+
+      .variant-9 .divider {
+        background: #afbfac;
+      }
+
+      .variant-9 .score-window {
+        border: 2px solid #324b40;
+        border-radius: 14px;
+        color: #f2f7ed;
+        background: #324b40;
+      }
+
+      .variant-9 .is-playing .changing .old {
+        animation: drop-old 580ms cubic-bezier(0.55, 0, 1, 0.45) forwards;
+      }
+
+      .variant-9 .is-playing .changing .next {
+        animation: drop-new 760ms cubic-bezier(0.2, 0.8, 0.25, 1.2) forwards;
+      }
+
+      @keyframes drop-old {
+        to {
+          opacity: 0;
+          transform: translateY(100%) rotate(7deg);
+        }
+      }
+
+      @keyframes drop-new {
+        0% {
+          opacity: 0;
+          transform: translateY(-120%);
+        }
+        65% {
+          opacity: 1;
+          transform: translateY(9%);
+        }
+        82% {
+          opacity: 1;
+          transform: translateY(-4%);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* 10. Mechanical stamp */
+      .variant-10 .board {
+        border: 1px solid #3e7560;
+        border-radius: 4px;
+        color: #b6ebd0;
+        background: #09251a;
+        box-shadow:
+          8px 8px 0 #06150f,
+          0 18px 45px rgba(0, 0, 0, 0.32);
+      }
+
+      .variant-10 .score-window {
+        border: 1px solid #4c806b;
+        color: #d7ffea;
+        background: #0c3022;
+      }
+
+      .variant-10 .is-playing .changing .score-window {
+        animation: stamp-box 560ms ease-out;
+      }
+
+      .variant-10 .is-playing .changing .old {
+        animation: stamp-old 300ms ease-in forwards;
+      }
+
+      .variant-10 .is-playing .changing .next {
+        animation: stamp-new 560ms cubic-bezier(0.16, 0.82, 0.22, 1.25) forwards;
+      }
+
+      @keyframes stamp-box {
+        35% {
+          transform: translateY(3px);
+          box-shadow: inset 0 0 0 3px rgba(171, 255, 210, 0.25);
+        }
+      }
+
+      @keyframes stamp-old {
+        to {
+          opacity: 0;
+          transform: scale(1.3) rotate(-4deg);
+        }
+      }
+
+      @keyframes stamp-new {
+        0% {
+          opacity: 0;
+          transform: scale(1.8) rotate(3deg);
+        }
+        58% {
+          opacity: 1;
+          transform: scale(0.92) rotate(0);
+        }
+        100% {
+          opacity: 1;
+          transform: scale(1) rotate(0);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .page {
+          width: min(100% - 20px, 1240px);
+          padding-top: 28px;
+        }
+
+        .topbar {
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .stage {
+          min-height: 210px;
+          padding: 24px 12px;
+        }
+
+        .team {
+          grid-template-columns: minmax(0, 1fr) 78px;
+          gap: 7px;
+          padding: 10px;
+        }
+
+        .name {
+          font-size: 10px;
+        }
+
+        .score-window {
+          width: 78px;
+          height: 72px;
+        }
+
+        .score {
+          font-size: 45px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          scroll-behavior: auto !important;
+          animation-duration: 1ms !important;
+          animation-iteration-count: 1 !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <div class="topbar">
+        <div>
+          <h1>Choose the scoreboard motion.</h1>
+          <p class="intro">
+            In every prototype, only Manu's score changes. Prateek's score stays
+            completely still. Use the replay buttons to compare them.
+          </p>
+        </div>
+        <button class="replay-all" type="button">Replay all</button>
+      </div>
+
+      <section class="grid" aria-label="Scoreboard animation prototypes">
+        <article class="prototype variant-1" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">1</span> Vertical roll
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+
+        <article class="prototype variant-2" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">2</span> Whole tile flip
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+
+        <article class="prototype variant-3" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">3</span> Slot reel
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+
+        <article class="prototype variant-4" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">4</span> Pop and settle
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+
+        <article class="prototype variant-5" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">5</span> Horizontal push
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+
+        <article class="prototype variant-6" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">6</span> Blur dissolve
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+
+        <article class="prototype variant-7" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">7</span> Full plate wipe
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+
+        <article class="prototype variant-8" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">8</span> LED scan
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+
+        <article class="prototype variant-9" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">9</span> Drop and bounce
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+
+        <article class="prototype variant-10" data-score="12">
+          <header class="prototype-head">
+            <h2 class="prototype-title">
+              <span class="number">10</span> Mechanical stamp
+            </h2>
+            <button class="replay-one" type="button">Replay</button>
+          </header>
+          <div class="stage"></div>
+        </article>
+      </section>
+    </main>
+
+    <template id="scoreboard-template">
+      <div class="board">
+        <div class="team changing">
+          <span class="name">MANU</span>
+          <div class="score-window">
+            <div class="score-stack">
+              <span class="score old">12</span>
+              <span class="score ghost">18</span>
+              <span class="score next">13</span>
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="team static">
+          <span class="name">PRATEEK</span>
+          <div class="score-window">
+            <div class="score-stack">
+              <span class="score old">09</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <script>
+      const template = document.querySelector('#scoreboard-template');
+      const prototypes = [...document.querySelectorAll('.prototype')];
+
+      for (const prototype of prototypes) {
+        prototype
+          .querySelector('.stage')
+          .append(template.content.cloneNode(true));
+      }
+
+      function padScore(value) {
+        return String(value).padStart(2, '0');
+      }
+
+      function play(prototype) {
+        const board = prototype.querySelector('.board');
+        const oldScore = prototype.querySelector('.changing .old');
+        const nextScore = prototype.querySelector('.changing .next');
+        const ghostScore = prototype.querySelector('.changing .ghost');
+        const current = Number(prototype.dataset.score || 12);
+        const next = current >= 19 ? 12 : current + 1;
+
+        oldScore.textContent = padScore(current);
+        nextScore.textContent = padScore(next);
+        ghostScore.textContent = padScore(current + 4);
+        board.classList.remove('is-playing');
+        void board.offsetWidth;
+        board.classList.add('is-playing');
+
+        window.clearTimeout(prototype.animationTimer);
+        prototype.animationTimer = window.setTimeout(() => {
+          prototype.dataset.score = String(next);
+          board.classList.remove('is-playing');
+          oldScore.textContent = padScore(next);
+          nextScore.textContent = padScore(next);
+        }, 900);
+      }
+
+      function playAll() {
+        prototypes.forEach(play);
+      }
+
+      document.querySelector('.replay-all').addEventListener('click', playAll);
+
+      for (const prototype of prototypes) {
+        prototype
+          .querySelector('.replay-one')
+          .addEventListener('click', () => play(prototype));
+      }
+
+      window.setTimeout(playAll, 500);
+      window.setInterval(playAll, 3_200);
+    </script>
+  </body>
+</html>
