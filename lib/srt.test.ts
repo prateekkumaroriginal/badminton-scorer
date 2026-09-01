@@ -23,4 +23,19 @@ describe('SRT export', () => {
     expect(srt).toContain('00:00:32,500 --> 00:01:05,000');
     expect(srt).toContain('Arjun  |  1');
   });
+
+  it('exports only the scores side by side', () => {
+    const srt = buildSrt({
+      sideA: 'Arjun',
+      sideB: 'Rahul',
+      durationMs: 10_000,
+      format: 'scores-only',
+      events: [{ ...INITIAL_SCORE, pointsA: 3, pointsB: 20, elapsedMs: 0 }],
+    });
+
+    expect(srt).toContain(`3${'\u00A0'.repeat(8)}20`);
+    expect(srt).not.toContain('Arjun');
+    expect(srt).not.toContain('Rahul');
+    expect(srt).not.toContain('|');
+  });
 });

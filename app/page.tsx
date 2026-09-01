@@ -29,7 +29,12 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { scoreFromRecord, scorePoint, type Side } from '@/lib/scoring';
-import { buildSrt, downloadSrt, srtFilename } from '@/lib/srt';
+import {
+  buildSrt,
+  downloadSrt,
+  srtFilename,
+  type SubtitleFormat,
+} from '@/lib/srt';
 
 const ACTIVE_MATCH_KEY = 'badminton-scorer:active-match-id';
 
@@ -425,9 +430,12 @@ function HistoryScreen({
   matches: Doc<'matches'>[];
   onBack: () => void;
   onResume: (matchId: Id<'matches'>) => void;
-  onExport: (matchId: Id<'matches'>) => Promise<void>;
+  onExport: (matchId: Id<'matches'>, format: SubtitleFormat) => Promise<void>;
   exportingId: Id<'matches'> | null;
 }) {
+  const [exportMatchId, setExportMatchId] = useState<Id<'matches'> | null>(
+    null,
+  );
   const dateFormat = useMemo(
     () =>
       new Intl.DateTimeFormat(undefined, {
@@ -440,6 +448,7 @@ function HistoryScreen({
     [],
   );
   const liveMatch = matches.find((match) => match.status === 'live');
+  const exportMatch = matches.find((match) => match._id === exportMatchId);
 
   return (
     <PageShell>
@@ -515,7 +524,7 @@ function HistoryScreen({
                     variant="outline"
                     className="w-full rounded-2xl bg-transparent"
                     disabled={exportingId === match._id}
-                    onClick={() => onExport(match._id)}
+                    onClick={() => setExportMatchId(match._id)}
                   >
                     {exportingId === match._id ? (
                       <LoaderCircle className="size-4 animate-spin" />
@@ -537,6 +546,81 @@ function HistoryScreen({
           Start another match
         </Button>
       ) : null}
+
+      <Dialog
+        open={exportMatch !== undefined}
+        onOpenChange={(open) => {
+          if (!open) setExportMatchId(null);
+        }}
+      >
+        <DialogContent
+          showCloseButton={false}
+          className="gap-0 overflow-hidden rounded-3xl p-0 sm:max-w-sm"
+        >
+          <div className="p-5">
+            <DialogHeader className="flex-row items-center justify-between gap-3">
+              <DialogTitle className="text-xl font-black tracking-tight">
+                Choose subtitle format
+              </DialogTitle>
+              <DialogClose
+                render={
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label="Close subtitle format dialog"
+                  />
+                }
+              >
+                <X className="size-4" />
+              </DialogClose>
+            </DialogHeader>
+            <DialogDescription className="mt-3 text-base leading-6">
+              Choose what Filmora will show for each score change.
+            </DialogDescription>
+
+            {exportMatch ? (
+              <div className="mt-5 space-y-3">
+                <Button
+                  variant="outline"
+                  className="h-auto w-full flex-col items-stretch gap-3 rounded-2xl p-4 text-left whitespace-normal"
+                  onClick={() => {
+                    setExportMatchId(null);
+                    void onExport(exportMatch._id, 'names-and-scores');
+                  }}
+                >
+                  <span className="flex w-full items-center justify-between gap-3">
+                    <span className="font-bold">Names and scores</span>
+                    <span className="text-xs font-semibold text-muted-foreground">
+                      Current
+                    </span>
+                  </span>
+                  <span className="rounded-xl bg-muted px-3 py-2 font-mono text-sm leading-6 text-muted-foreground">
+                    {exportMatch.sideA} &nbsp;|&nbsp; {exportMatch.pointsA}
+                    <br />
+                    {exportMatch.sideB} &nbsp;|&nbsp; {exportMatch.pointsB}
+                  </span>
+                </Button>
+
+                <Button
+                  variant="outline"
+                  className="h-auto w-full flex-col items-stretch gap-3 rounded-2xl p-4 text-left whitespace-normal"
+                  onClick={() => {
+                    setExportMatchId(null);
+                    void onExport(exportMatch._id, 'scores-only');
+                  }}
+                >
+                  <span className="font-bold">Scores only</span>
+                  <span className="rounded-xl bg-muted px-3 py-2 text-center font-mono text-sm leading-6 text-muted-foreground">
+                    {exportMatch.pointsA}
+                    {'\u00A0'.repeat(8)}
+                    {exportMatch.pointsB}
+                  </span>
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        </DialogContent>
+      </Dialog>
     </PageShell>
   );
 }
@@ -727,7 +811,7 @@ export default function Home() {
           setView('main');
         }}
         exportingId={exportingId}
-        onExport={async (matchId) => {
+        onExport={async (matchId, format) => {
           setExportingId(matchId);
           setError(null);
           try {
@@ -740,6 +824,7 @@ export default function Home() {
               durationMs:
                 data.match.durationMs ??
                 Math.max(0, Date.now() - data.match.startedAt),
+              format,
               events: data.events.map((event) => ({
                 pointsA: event.pointsA,
                 pointsB: event.pointsB,

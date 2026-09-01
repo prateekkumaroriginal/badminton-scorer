@@ -1,4 +1,7 @@
 export type TimedScore = { pointsA: number; pointsB: number; elapsedMs: number };
+export type SubtitleFormat = 'names-and-scores' | 'scores-only';
+
+const SCORE_GAP = '\u00A0'.repeat(8);
 
 function pad(value: number, width = 2) {
   return String(value).padStart(width, '0');
@@ -18,6 +21,7 @@ export function buildSrt(args: {
   sideB: string;
   durationMs: number;
   events: TimedScore[];
+  format?: SubtitleFormat;
 }) {
   const events = [...args.events].sort((a, b) => a.elapsedMs - b.elapsedMs);
 
@@ -25,10 +29,13 @@ export function buildSrt(args: {
     .map((event, index) => {
       const nextStart = events[index + 1]?.elapsedMs;
       const end = nextStart ?? Math.max(args.durationMs, event.elapsedMs + 1_000);
-      const text = [
-        `${args.sideA}  |  ${event.pointsA}`,
-        `${args.sideB}  |  ${event.pointsB}`,
-      ].join('\n');
+      const text =
+        args.format === 'scores-only'
+          ? `${event.pointsA}${SCORE_GAP}${event.pointsB}`
+          : [
+              `${args.sideA}  |  ${event.pointsA}`,
+              `${args.sideB}  |  ${event.pointsB}`,
+            ].join('\n');
 
       return [
         index + 1,
