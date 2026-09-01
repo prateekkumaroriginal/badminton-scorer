@@ -13,8 +13,11 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
+const deploymentHost =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://rallyframe-scorer.superbanno999.chatgpt.site'),
+  metadataBase: new URL(deploymentHost ? `https://${deploymentHost}` : 'http://localhost:3000'),
   title: 'Rallyframe | Badminton scorer',
   description: 'Record badminton scores and export a timed SRT track for Filmora.',
   openGraph: {
