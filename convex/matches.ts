@@ -162,6 +162,23 @@ export const finish = mutation({
   },
 });
 
+export const cancel = mutation({
+  args: { matchId: v.id('matches') },
+  handler: async (ctx, args) => {
+    const match = await ctx.db.get(args.matchId);
+    if (!match) return;
+    if (match.status !== 'live') throw new Error('Only a live match can be cancelled.');
+
+    const events = await ctx.db
+      .query('scoreEvents')
+      .withIndex('by_match_sequence', (q) => q.eq('matchId', args.matchId))
+      .collect();
+
+    for (const event of events) await ctx.db.delete(event._id);
+    await ctx.db.delete(match._id);
+  },
+});
+
 export const getForExport = query({
   args: { matchId: v.id('matches') },
   handler: async (ctx, args) => {
