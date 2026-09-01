@@ -249,25 +249,54 @@
         background: rgba(255, 255, 255, 0.14);
       }
 
-      /* 1. Vertical roll */
-      .variant-1 .board {
-        border: 1px solid rgba(162, 225, 187, 0.33);
-        border-radius: 18px;
-        background: #071d14;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      /* Approved motion families and their visual styles */
+      .roll .ghost,
+      .tile-flip .ghost,
+      .calendar-flip .ghost {
+        opacity: 0;
+        animation: none;
       }
 
-      .variant-1 .score-window {
-        border-radius: 12px;
-        background: #123426;
-        box-shadow: inset 0 0 0 1px rgba(177, 238, 201, 0.12);
+      .roll .score-stack,
+      .roll .score {
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        box-shadow: none;
+        font-family: inherit;
+        text-shadow: none;
+        transform: none;
       }
 
-      .variant-1 .is-playing .changing .old {
+      .roll .score {
+        backface-visibility: visible;
+      }
+
+      .roll .next {
+        opacity: 0;
+      }
+
+      .roll .score-window::after {
+        display: none;
+      }
+
+      .roll .is-playing .changing .score-stack,
+      .roll .is-playing .changing .score-window,
+      .roll .is-playing .changing .ghost {
+        opacity: 0;
+        animation: none;
+      }
+
+      .roll .is-playing .changing .score-stack,
+      .roll .is-playing .changing .score-window {
+        opacity: 1;
+      }
+
+      .roll .is-playing .changing .old {
         animation: roll-old 650ms cubic-bezier(0.55, 0, 0.2, 1) forwards;
       }
 
-      .variant-1 .is-playing .changing .next {
+      .roll .is-playing .changing .next {
         animation: roll-new 650ms cubic-bezier(0.55, 0, 0.2, 1) forwards;
       }
 
@@ -289,43 +318,149 @@
         }
       }
 
-      /* 2. Whole tile flip */
-      .variant-2 .board {
-        border-radius: 14px;
-        color: #fff4d9;
-        background: #161512;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
-        perspective: 800px;
+      .roll.variant-1 .board {
+        overflow: hidden;
+        border: 1px solid rgba(162, 225, 187, 0.33);
+        border-radius: 18px;
+        color: #edf8f1;
+        background: #071d14;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
       }
 
-      .variant-2 .team {
-        background: linear-gradient(180deg, #24211c, #12110f);
+      .roll.variant-1 .team {
+        background: transparent;
       }
 
-      .variant-2 .score-window {
+      .roll.variant-1 .divider {
+        background: rgba(255, 255, 255, 0.14);
+      }
+
+      .roll.variant-1 .score-window {
+        border: 0;
+        border-radius: 12px;
+        color: #edf8f1;
+        background: #123426;
+        box-shadow: inset 0 0 0 1px rgba(177, 238, 201, 0.12);
+      }
+
+      .roll.variant-2 .board {
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.42);
+        border-radius: 26px;
+        color: #10271d;
+        background: rgba(245, 255, 248, 0.84);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.24);
+        backdrop-filter: blur(14px);
+      }
+
+      .roll.variant-2 .team {
+        background: transparent;
+      }
+
+      .roll.variant-2 .divider {
+        background: rgba(16, 39, 29, 0.15);
+      }
+
+      .roll.variant-2 .score-window {
+        overflow: hidden;
+        border: 1px solid rgba(11, 107, 69, 0.16);
+        border-radius: 18px;
+        color: white;
+        background: linear-gradient(145deg, #08744a, #075b3c);
+        box-shadow: 0 10px 24px rgba(7, 91, 60, 0.2);
+      }
+
+      .roll.variant-3 .board {
+        overflow: hidden;
+        border: 0;
+        border-radius: 7px;
+        color: white;
+        background: #063b78;
+        box-shadow: 0 16px 40px rgba(0, 22, 54, 0.4);
+      }
+
+      .roll.variant-3 .team {
+        background: transparent;
+      }
+
+      .roll.variant-3 .team:first-child {
+        border-top: 5px solid #55d6ff;
+      }
+
+      .roll.variant-3 .team:last-child {
+        border-top: 5px solid #ffc857;
+      }
+
+      .roll.variant-3 .divider {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .roll.variant-3 .score-window {
+        overflow: hidden;
+        border: 0;
+        border-radius: 2px;
+        color: white;
+        background: #052958;
+        box-shadow: none;
+      }
+
+      .roll.variant-4 .board {
+        overflow: hidden;
+        border: 3px solid #efe0b8;
+        border-radius: 2px;
+        color: #f5e7c2;
+        background: #191713;
+        box-shadow:
+          7px 7px 0 #0b0a08,
+          0 18px 45px rgba(0, 0, 0, 0.36);
+      }
+
+      .roll.variant-4 .team {
+        background: transparent;
+      }
+
+      .roll.variant-4 .name {
+        font-family: Georgia, serif;
+        letter-spacing: 0.12em;
+      }
+
+      .roll.variant-4 .divider {
+        background: #665c48;
+      }
+
+      .roll.variant-4 .score-window {
+        overflow: hidden;
+        border: 1px solid #665c48;
+        border-radius: 0;
+        color: #191713;
+        background: #efe0b8;
+        box-shadow: inset 0 0 18px rgba(79, 60, 25, 0.1);
+      }
+
+      .tile-flip .score-window {
         overflow: visible;
         perspective: 500px;
       }
 
-      .variant-2 .score-stack {
-        border: 1px solid #514a3d;
-        border-radius: 10px;
-        background: #090908;
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
+      .tile-flip .score-stack {
+        transform-style: preserve-3d;
       }
 
-      .variant-2 .score {
-        border-radius: 10px;
+      .tile-flip .score {
         backface-visibility: hidden;
-        background: #090908;
       }
 
-      .variant-2 .next {
+      .tile-flip .next {
         opacity: 1;
         transform: rotateX(180deg);
       }
 
-      .variant-2 .is-playing .changing .score-stack {
+      .tile-flip .is-playing .changing .old,
+      .tile-flip .is-playing .changing .next {
+        animation: none;
+      }
+
+      .tile-flip .is-playing .changing .score-stack {
         animation: whole-tile-flip 720ms cubic-bezier(0.4, 0, 0.18, 1) forwards;
       }
 
@@ -335,224 +470,34 @@
         }
       }
 
-      /* 3. Slot reel */
-      .variant-3 .board {
-        overflow: hidden;
-        border: 2px solid #8f6335;
-        border-radius: 16px;
-        color: #25170c;
-        background: linear-gradient(180deg, #e3bb7f, #b77a3e);
-        box-shadow: 0 18px 45px rgba(41, 19, 4, 0.38);
+      .tile-flip.variant-5 .board {
+        overflow: visible;
+        border: 0;
+        border-radius: 14px;
+        color: #fff4d9;
+        background: #161512;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
       }
 
-      .variant-3 .divider {
-        background: rgba(64, 34, 10, 0.28);
+      .tile-flip.variant-5 .team {
+        background: linear-gradient(180deg, #24211c, #12110f);
       }
 
-      .variant-3 .score-window {
-        border: 3px solid #43260f;
-        border-radius: 50px;
-        color: #ffe4b8;
-        background: #1c120b;
-        box-shadow: inset 0 8px 14px rgba(0, 0, 0, 0.65);
+      .tile-flip.variant-5 .divider {
+        background: rgba(255, 255, 255, 0.14);
       }
 
-      .variant-3 .is-playing .changing .old {
-        animation: slot-old 820ms cubic-bezier(0.3, 0, 0.2, 1) forwards;
-      }
-
-      .variant-3 .is-playing .changing .ghost {
-        animation: slot-ghost 820ms linear forwards;
-      }
-
-      .variant-3 .is-playing .changing .next {
-        animation: slot-new 820ms cubic-bezier(0.3, 0, 0.2, 1) forwards;
-      }
-
-      @keyframes slot-old {
-        to {
-          opacity: 0;
-          filter: blur(3px);
-          transform: translateY(-190%);
-        }
-      }
-
-      @keyframes slot-ghost {
-        0% {
-          opacity: 0;
-          transform: translateY(150%);
-        }
-        30% {
-          opacity: 0.55;
-        }
-        70% {
-          opacity: 0.55;
-        }
-        100% {
-          opacity: 0;
-          transform: translateY(-150%);
-        }
-      }
-
-      @keyframes slot-new {
-        from {
-          opacity: 0;
-          filter: blur(3px);
-          transform: translateY(190%);
-        }
-        to {
-          opacity: 1;
-          filter: blur(0);
-          transform: translateY(0);
-        }
-      }
-
-      /* 4. Pop and settle */
-      .variant-4 .board {
-        border-radius: 24px;
-        color: #10271d;
-        background: rgba(240, 255, 246, 0.9);
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.26);
-        backdrop-filter: blur(12px);
-      }
-
-      .variant-4 .divider {
-        background: rgba(16, 39, 29, 0.15);
-      }
-
-      .variant-4 .score-window {
-        border-radius: 18px;
-        color: white;
-        background: #0b6b45;
-      }
-
-      .variant-4 .is-playing .changing .old {
-        animation: pop-old 480ms ease-out forwards;
-      }
-
-      .variant-4 .is-playing .changing .next {
-        animation: pop-new 620ms cubic-bezier(0.2, 0.9, 0.22, 1.35) forwards;
-      }
-
-      @keyframes pop-old {
-        to {
-          opacity: 0;
-          transform: scale(0.45);
-        }
-      }
-
-      @keyframes pop-new {
-        0% {
-          opacity: 0;
-          transform: scale(0.3);
-        }
-        65% {
-          opacity: 1;
-          transform: scale(1.16);
-        }
-        100% {
-          opacity: 1;
-          transform: scale(1);
-        }
-      }
-
-      /* 5. Horizontal push */
-      .variant-5 .board {
-        overflow: hidden;
-        border-radius: 6px;
-        color: white;
-        background: #063b78;
-        box-shadow: 0 16px 40px rgba(0, 22, 54, 0.4);
-      }
-
-      .variant-5 .team:first-child {
-        border-top: 5px solid #55d6ff;
-      }
-
-      .variant-5 .team:last-child {
-        border-top: 5px solid #ffc857;
-      }
-
-      .variant-5 .score-window {
-        background: #052958;
-      }
-
-      .variant-5 .is-playing .changing .old {
-        animation: push-old 620ms cubic-bezier(0.65, 0, 0.2, 1) forwards;
-      }
-
-      .variant-5 .is-playing .changing .next {
-        animation: push-new 620ms cubic-bezier(0.65, 0, 0.2, 1) forwards;
-      }
-
-      @keyframes push-old {
-        to {
-          opacity: 0;
-          transform: translateX(-120%);
-        }
-      }
-
-      @keyframes push-new {
-        from {
-          opacity: 1;
-          transform: translateX(120%);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-
-      /* 6. Blur dissolve */
-      .variant-6 .board {
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        border-radius: 15px;
-        color: #101010;
-        background: #f2f0ea;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
-      }
-
-      .variant-6 .divider {
-        background: rgba(0, 0, 0, 0.18);
-      }
-
-      .variant-6 .score-window {
+      .tile-flip.variant-5 .score-stack,
+      .tile-flip.variant-5 .score {
+        border: 1px solid #514a3d;
         border-radius: 10px;
-        color: #f4f4f2;
-        background: #141414;
+        color: #fff4d9;
+        background: #090908;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
       }
 
-      .variant-6 .is-playing .changing .old {
-        animation: dissolve-old 700ms ease forwards;
-      }
-
-      .variant-6 .is-playing .changing .next {
-        animation: dissolve-new 700ms ease forwards;
-      }
-
-      @keyframes dissolve-old {
-        to {
-          opacity: 0;
-          filter: blur(14px);
-          transform: scale(1.18);
-        }
-      }
-
-      @keyframes dissolve-new {
-        from {
-          opacity: 0;
-          filter: blur(14px);
-          transform: scale(0.82);
-        }
-        to {
-          opacity: 1;
-          filter: blur(0);
-          transform: scale(1);
-        }
-      }
-
-      /* 7. Full plate wipe */
-      .variant-7 .board {
+      .tile-flip.variant-6 .board {
+        overflow: visible;
         border: 3px solid #f5ce3e;
         border-radius: 8px;
         color: #f8dc67;
@@ -560,34 +505,51 @@
         box-shadow: 0 18px 45px rgba(0, 0, 0, 0.42);
       }
 
-      .variant-7 .score-window {
+      .tile-flip.variant-6 .team {
+        background: transparent;
+      }
+
+      .tile-flip.variant-6 .divider {
+        background: rgba(245, 206, 62, 0.32);
+      }
+
+      .tile-flip.variant-6 .score-stack,
+      .tile-flip.variant-6 .score {
+        border: 0;
         border-radius: 3px;
         color: #111108;
         background: #f5ce3e;
+        box-shadow: none;
       }
 
-      .variant-7 .next {
-        opacity: 1;
+      .tile-flip.variant-7 .board {
+        overflow: visible;
+        border: 1px solid #d8ddd9;
+        border-radius: 16px;
+        color: #151917;
+        background: #f7f8f7;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
       }
 
-      .variant-7 .old {
-        z-index: 1;
-        background: #f5ce3e;
+      .tile-flip.variant-7 .team {
+        background: transparent;
       }
 
-      .variant-7 .is-playing .changing .old {
-        animation: plate-wipe 650ms cubic-bezier(0.7, 0, 0.2, 1) forwards;
+      .tile-flip.variant-7 .divider {
+        background: #d8ddd9;
       }
 
-      @keyframes plate-wipe {
-        to {
-          clip-path: inset(0 0 100% 0);
-          transform: translateY(-8px);
-        }
+      .tile-flip.variant-7 .score-stack,
+      .tile-flip.variant-7 .score {
+        border: 1px solid #d8ddd9;
+        border-radius: 14px;
+        color: #151917;
+        background: #fff;
+        box-shadow: 0 9px 22px rgba(11, 22, 15, 0.1);
       }
 
-      /* 8. LED scan */
-      .variant-8 .board {
+      .tile-flip.variant-8 .board {
+        overflow: visible;
         border: 4px solid #2b2525;
         border-radius: 11px;
         color: #a89b9b;
@@ -601,128 +563,119 @@
         box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
       }
 
-      .variant-8 .score-window {
+      .tile-flip.variant-8 .team {
+        background: transparent;
+      }
+
+      .tile-flip.variant-8 .divider {
+        background: rgba(255, 69, 63, 0.16);
+      }
+
+      .tile-flip.variant-8 .score-stack,
+      .tile-flip.variant-8 .score {
+        border: 0;
+        border-radius: 2px;
         color: #ff453f;
         background: #100a0a;
         box-shadow: inset 0 0 18px rgba(255, 40, 35, 0.08);
-      }
-
-      .variant-8 .score {
         font-family: 'Courier New', monospace;
         text-shadow: 0 0 13px rgba(255, 61, 54, 0.8);
       }
 
-      .variant-8 .score-window::after {
+      .tile-flip.variant-8 .score-window::after {
+        display: none;
+      }
+
+      .calendar-flip .board {
+        overflow: visible;
+      }
+
+      .calendar-flip .score-window {
+        overflow: visible;
+        perspective: 620px;
+      }
+
+      .calendar-flip .score-window::before,
+      .calendar-flip .score-window::after {
         position: absolute;
-        z-index: 3;
-        inset: 0;
+        z-index: 5;
+        top: -5px;
+        width: 9px;
+        height: 14px;
+        border: 2px solid currentColor;
+        border-bottom: 0;
+        border-radius: 6px 6px 0 0;
         content: '';
-        opacity: 0;
-        background: linear-gradient(
-          transparent 0 42%,
-          rgba(255, 90, 75, 0.4) 50%,
-          transparent 58%
-        );
-        transform: translateY(-100%);
+        opacity: 0.7;
       }
 
-      .variant-8 .is-playing .changing .old {
-        animation: led-old 520ms steps(4, end) forwards;
+      .calendar-flip .score-window::before {
+        left: 25px;
       }
 
-      .variant-8 .is-playing .changing .next {
-        animation: led-new 520ms steps(4, end) forwards;
+      .calendar-flip .score-window::after {
+        right: 25px;
       }
 
-      .variant-8 .is-playing .changing .score-window::after {
-        animation: led-scan 520ms linear forwards;
+      .calendar-flip .score-stack {
+        transform-style: preserve-3d;
       }
 
-      @keyframes led-old {
-        45%,
-        100% {
-          opacity: 0;
-        }
+      .calendar-flip .score {
+        border-radius: inherit;
+        backface-visibility: hidden;
       }
 
-      @keyframes led-new {
-        0%,
-        44% {
-          opacity: 0;
-        }
-        45%,
-        100% {
-          opacity: 1;
-        }
+      .calendar-flip .next {
+        opacity: 1;
       }
 
-      @keyframes led-scan {
-        15% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-          transform: translateY(100%);
-        }
+      .calendar-flip .is-playing .changing .old {
+        z-index: 2;
+        animation: calendar-page-away 780ms cubic-bezier(0.5, 0, 0.22, 1)
+          forwards;
+        transform-origin: 50% 0;
       }
 
-      /* 9. Drop and bounce */
-      .variant-9 .board {
-        border-radius: 18px;
-        color: #23322d;
-        background: #e8f0df;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.3);
+      .calendar-flip .is-playing .changing .next {
+        animation: calendar-page-reveal 780ms ease-out forwards;
       }
 
-      .variant-9 .divider {
-        background: #afbfac;
+      .calendar-flip .is-playing .changing .score-window {
+        animation: none;
       }
 
-      .variant-9 .score-window {
-        border: 2px solid #324b40;
-        border-radius: 14px;
-        color: #f2f7ed;
-        background: #324b40;
-      }
-
-      .variant-9 .is-playing .changing .old {
-        animation: drop-old 580ms cubic-bezier(0.55, 0, 1, 0.45) forwards;
-      }
-
-      .variant-9 .is-playing .changing .next {
-        animation: drop-new 760ms cubic-bezier(0.2, 0.8, 0.25, 1.2) forwards;
-      }
-
-      @keyframes drop-old {
-        to {
-          opacity: 0;
-          transform: translateY(100%) rotate(7deg);
-        }
-      }
-
-      @keyframes drop-new {
+      @keyframes calendar-page-away {
         0% {
-          opacity: 0;
-          transform: translateY(-120%);
-        }
-        65% {
           opacity: 1;
-          transform: translateY(9%);
+          filter: brightness(1);
+          transform: rotateX(0deg);
         }
-        82% {
+        70% {
           opacity: 1;
-          transform: translateY(-4%);
         }
         100% {
-          opacity: 1;
-          transform: translateY(0);
+          opacity: 0;
+          filter: brightness(0.72);
+          transform: rotateX(112deg) translateY(-4px);
         }
       }
 
-      /* 10. Mechanical stamp */
-      .variant-10 .board {
+      @keyframes calendar-page-reveal {
+        0%,
+        42% {
+          filter: brightness(0.72);
+          transform: scale(0.97);
+        }
+        100% {
+          filter: brightness(1);
+          transform: scale(1);
+        }
+      }
+
+      .calendar-flip.variant-9 .board {
         border: 1px solid #3e7560;
-        border-radius: 4px;
+        border-radius: 12px;
         color: #b6ebd0;
         background: #09251a;
         box-shadow:
@@ -730,51 +683,59 @@
           0 18px 45px rgba(0, 0, 0, 0.32);
       }
 
-      .variant-10 .score-window {
-        border: 1px solid #4c806b;
-        color: #d7ffea;
-        background: #0c3022;
+      .calendar-flip.variant-9 .team {
+        background: transparent;
       }
 
-      .variant-10 .is-playing .changing .score-window {
-        animation: stamp-box 560ms ease-out;
+      .calendar-flip.variant-9 .divider {
+        background: #3e7560;
       }
 
-      .variant-10 .is-playing .changing .old {
-        animation: stamp-old 300ms ease-in forwards;
+      .calendar-flip.variant-9 .score-window {
+        border: 0;
+        border-radius: 4px 4px 10px 10px;
+        color: #18452f;
+        background: transparent;
       }
 
-      .variant-10 .is-playing .changing .next {
-        animation: stamp-new 560ms cubic-bezier(0.16, 0.82, 0.22, 1.25) forwards;
+      .calendar-flip.variant-9 .score {
+        border-top: 8px solid #b6ebd0;
+        color: #123523;
+        background: #effaf3;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28);
       }
 
-      @keyframes stamp-box {
-        35% {
-          transform: translateY(3px);
-          box-shadow: inset 0 0 0 3px rgba(171, 255, 210, 0.25);
-        }
+      .calendar-flip.variant-10 .board {
+        border: 2px solid #70492c;
+        border-radius: 6px;
+        color: #372718;
+        background: #e2bc82;
+        box-shadow: 0 18px 45px rgba(41, 19, 4, 0.38);
       }
 
-      @keyframes stamp-old {
-        to {
-          opacity: 0;
-          transform: scale(1.3) rotate(-4deg);
-        }
+      .calendar-flip.variant-10 .team {
+        background: linear-gradient(180deg, #efce99, #d4a96e);
       }
 
-      @keyframes stamp-new {
-        0% {
-          opacity: 0;
-          transform: scale(1.8) rotate(3deg);
-        }
-        58% {
-          opacity: 1;
-          transform: scale(0.92) rotate(0);
-        }
-        100% {
-          opacity: 1;
-          transform: scale(1) rotate(0);
-        }
+      .calendar-flip.variant-10 .divider {
+        background: rgba(64, 34, 10, 0.28);
+      }
+
+      .calendar-flip.variant-10 .score-window {
+        border: 0;
+        border-radius: 3px 3px 9px 9px;
+        color: #6e4323;
+        background: transparent;
+      }
+
+      .calendar-flip.variant-10 .score {
+        border-top: 8px solid #b8372c;
+        color: #25170c;
+        background:
+          linear-gradient(rgba(105, 68, 35, 0.06) 1px, transparent 1px), #fff5db;
+        background-size: 100% 18px;
+        box-shadow: 0 8px 18px rgba(74, 38, 10, 0.3);
+        font-family: Georgia, serif;
       }
 
       @media (max-width: 900px) {
@@ -834,110 +795,111 @@
     <main class="page">
       <div class="topbar">
         <div>
-          <h1>Choose the scoreboard motion.</h1>
+          <h1>Choose the scoreboard style.</h1>
           <p class="intro">
-            In every prototype, only Manu's score changes. Prateek's score stays
-            completely still. Use the replay buttons to compare them.
+            Options 1 to 4 use the vertical roll. Options 5 to 8 flip the whole
+            score tile. Options 9 and 10 turn a complete calendar page. Only
+            Manu's score moves.
           </p>
         </div>
         <button class="replay-all" type="button">Replay all</button>
       </div>
 
       <section class="grid" aria-label="Scoreboard animation prototypes">
-        <article class="prototype variant-1" data-score="12">
+        <article class="prototype variant-1 roll" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">1</span> Vertical roll
+              <span class="number">1</span> Broadcast roll
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-2" data-score="12">
+        <article class="prototype variant-2 roll" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">2</span> Whole tile flip
+              <span class="number">2</span> Glass roll
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-3" data-score="12">
+        <article class="prototype variant-3 roll" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">3</span> Slot reel
+              <span class="number">3</span> Blue sports roll
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-4" data-score="12">
+        <article class="prototype variant-4 roll" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">4</span> Pop and settle
+              <span class="number">4</span> Classic roll
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-5" data-score="12">
+        <article class="prototype variant-5 tile-flip" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">5</span> Horizontal push
+              <span class="number">5</span> Mechanical tile flip
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-6" data-score="12">
+        <article class="prototype variant-6 tile-flip" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">6</span> Blur dissolve
+              <span class="number">6</span> Yellow tile flip
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-7" data-score="12">
+        <article class="prototype variant-7 tile-flip" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">7</span> Full plate wipe
+              <span class="number">7</span> Minimal tile flip
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-8" data-score="12">
+        <article class="prototype variant-8 tile-flip" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">8</span> LED scan
+              <span class="number">8</span> LED tile flip
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-9" data-score="12">
+        <article class="prototype variant-9 calendar-flip" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">9</span> Drop and bounce
+              <span class="number">9</span> Green calendar
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-10" data-score="12">
+        <article class="prototype variant-10 calendar-flip" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">10</span> Mechanical stamp
+              <span class="number">10</span> Paper calendar
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
