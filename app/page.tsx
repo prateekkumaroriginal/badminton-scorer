@@ -5,12 +5,12 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
-  Download,
   History,
   LoaderCircle,
   Plus,
   RotateCcw,
   Trophy,
+  Upload,
   X,
 } from 'lucide-react';
 import { useConvex, useMutation, useQuery } from 'convex/react';
@@ -520,7 +520,7 @@ function HistoryScreen({
                     {exportingId === match._id ? (
                       <LoaderCircle className="size-4 animate-spin" />
                     ) : (
-                      <Download className="size-4" />
+                      <Upload className="size-4" />
                     )}
                     Export Filmora SRT
                   </Button>
