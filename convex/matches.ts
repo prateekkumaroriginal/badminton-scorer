@@ -5,6 +5,31 @@ import { mutation, query } from './_generated/server';
 
 const sideValidator = v.union(v.literal('A'), v.literal('B'));
 
+const matchValidator = v.object({
+  _id: v.id('matches'),
+  _creationTime: v.number(),
+  sideA: v.string(),
+  sideB: v.string(),
+  status: v.union(v.literal('live'), v.literal('finished')),
+  startedAt: v.number(),
+  durationMs: v.optional(v.number()),
+  pointsA: v.number(),
+  pointsB: v.number(),
+  winner: v.optional(sideValidator),
+  eventCount: v.number(),
+});
+
+const scoreEventValidator = v.object({
+  _id: v.id('scoreEvents'),
+  _creationTime: v.number(),
+  matchId: v.id('matches'),
+  eventId: v.string(),
+  sequence: v.number(),
+  elapsedMs: v.number(),
+  pointsA: v.number(),
+  pointsB: v.number(),
+});
+
 function scoreFields(score: ReturnType<typeof scoreFromRecord>) {
   return {
     pointsA: score.pointsA,
@@ -15,13 +40,15 @@ function scoreFields(score: ReturnType<typeof scoreFromRecord>) {
 
 export const list = query({
   args: {},
-  handler: async (ctx) => {
-    return await ctx.db
-      .query('matches')
-      .withIndex('by_started_at')
-      .order('desc')
-      .take(50);
-  },
+  returns: v.array(matchValidator),
+  handler: async (ctx) =>
+    await ctx.db.query('matches').order('desc').collect(),
+});
+
+export const get = query({
+  args: { matchId: v.id('matches') },
+  returns: v.union(matchValidator, v.null()),
+  handler: async (ctx, args) => await ctx.db.get(args.matchId),
 });
 
 export const start = mutation({
@@ -30,16 +57,11 @@ export const start = mutation({
     sideB: v.string(),
     startedAt: v.number(),
   },
+  returns: v.id('matches'),
   handler: async (ctx, args) => {
     const sideA = args.sideA.trim().slice(0, 50);
     const sideB = args.sideB.trim().slice(0, 50);
     if (!sideA || !sideB) throw new Error('Both sides need a name.');
-
-    const existingLive = await ctx.db
-      .query('matches')
-      .filter((q) => q.eq(q.field('status'), 'live'))
-      .first();
-    if (existingLive) return existingLive._id;
 
     const matchId = await ctx.db.insert('matches', {
       sideA,
@@ -70,15 +92,17 @@ export const addPoint = mutation({
     elapsedMs: v.number(),
     eventId: v.string(),
   },
+  returns: v.id('scoreEvents'),
   handler: async (ctx, args) => {
     const duplicate = await ctx.db
       .query('scoreEvents')
       .withIndex('by_event_id', (q) => q.eq('eventId', args.eventId))
       .unique();
-    if (duplicate) return duplicate;
+    if (duplicate) return duplicate._id;
 
     const match = await ctx.db.get(args.matchId);
-    if (!match || match.status !== 'live') throw new Error('This match is not live.');
+    if (!match || match.status !== 'live')
+      throw new Error('This match is not live.');
     if (match.winner) throw new Error('The match already has a winner.');
 
     const previous = await ctx.db
@@ -111,9 +135,11 @@ export const addPoint = mutation({
 
 export const undo = mutation({
   args: { matchId: v.id('matches') },
+  returns: v.union(matchValidator, scoreEventValidator),
   handler: async (ctx, args) => {
     const match = await ctx.db.get(args.matchId);
-    if (!match || match.status !== 'live') throw new Error('This match is not live.');
+    if (!match || match.status !== 'live')
+      throw new Error('This match is not live.');
 
     const latest = await ctx.db
       .query('scoreEvents')
@@ -136,17 +162,21 @@ export const undo = mutation({
 
 export const finish = mutation({
   args: { matchId: v.id('matches'), durationMs: v.number() },
+  returns: v.id('matches'),
   handler: async (ctx, args) => {
     const match = await ctx.db.get(args.matchId);
     if (!match) throw new Error('Match not found.');
-    if (match.status === 'finished') return match;
+    if (match.status === 'finished') return match._id;
 
     const latest = await ctx.db
       .query('scoreEvents')
       .withIndex('by_match_sequence', (q) => q.eq('matchId', args.matchId))
       .order('desc')
       .first();
-    const durationMs = Math.max(latest?.elapsedMs ?? 0, Math.round(args.durationMs));
+    const durationMs = Math.max(
+      latest?.elapsedMs ?? 0,
+      Math.round(args.durationMs),
+    );
 
     await ctx.db.patch(match._id, {
       status: 'finished',
@@ -158,10 +188,12 @@ export const finish = mutation({
 
 export const cancel = mutation({
   args: { matchId: v.id('matches') },
+  returns: v.null(),
   handler: async (ctx, args) => {
     const match = await ctx.db.get(args.matchId);
-    if (!match) return;
-    if (match.status !== 'live') throw new Error('Only a live match can be cancelled.');
+    if (!match) return null;
+    if (match.status !== 'live')
+      throw new Error('Only a live match can be cancelled.');
 
     const events = await ctx.db
       .query('scoreEvents')
@@ -170,11 +202,16 @@ export const cancel = mutation({
 
     for (const event of events) await ctx.db.delete(event._id);
     await ctx.db.delete(match._id);
+    return null;
   },
 });
 
 export const getForExport = query({
   args: { matchId: v.id('matches') },
+  returns: v.object({
+    match: matchValidator,
+    events: v.array(scoreEventValidator),
+  }),
   handler: async (ctx, args) => {
     const match = await ctx.db.get(args.matchId);
     if (!match) throw new Error('Match not found.');

@@ -14,7 +14,7 @@ export default defineSchema({
     pointsB: v.number(),
     winner: v.optional(side),
     eventCount: v.number(),
-  }).index('by_started_at', ['startedAt']),
+  }),
 
   scoreEvents: defineTable({
     matchId: v.id('matches'),

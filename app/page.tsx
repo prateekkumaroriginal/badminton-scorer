@@ -31,6 +31,8 @@ import { Input } from '@/components/ui/input';
 import { scoreFromRecord, scorePoint, type Side } from '@/lib/scoring';
 import { buildSrt, downloadSrt, srtFilename } from '@/lib/srt';
 
+const ACTIVE_MATCH_KEY = 'badminton-scorer:active-match-id';
+
 function useClock(enabled: boolean) {
   const [now, setNow] = useState(() => Date.now());
 
@@ -99,7 +101,10 @@ function SetupScreen({
           }}
         >
           <div className="rounded-3xl border bg-card p-2 shadow-[0_12px_40px_rgb(22_49_39/6%)] focus-within:border-court/40 focus-within:ring-4 focus-within:ring-court/10">
-            <label htmlFor="side-a" className="block px-3 pt-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            <label
+              htmlFor="side-a"
+              className="block px-3 pt-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground"
+            >
               Side A
             </label>
             <Input
@@ -115,7 +120,10 @@ function SetupScreen({
           </div>
 
           <div className="rounded-3xl border bg-card p-2 shadow-[0_12px_40px_rgb(22_49_39/6%)] focus-within:border-court/40 focus-within:ring-4 focus-within:ring-court/10">
-            <label htmlFor="side-b" className="block px-3 pt-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
+            <label
+              htmlFor="side-b"
+              className="block px-3 pt-2 text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground"
+            >
               Side B
             </label>
             <Input
@@ -130,7 +138,9 @@ function SetupScreen({
             />
           </div>
 
-          {error ? <p className="px-2 text-sm font-medium text-destructive">{error}</p> : null}
+          {error ? (
+            <p className="px-2 text-sm font-medium text-destructive">{error}</p>
+          ) : null}
 
           <Button
             type="submit"
@@ -143,7 +153,6 @@ function SetupScreen({
           </Button>
         </form>
       </section>
-
     </PageShell>
   );
 }
@@ -161,11 +170,18 @@ function ScoreRow({
     <div className="grid grid-cols-[1fr_80px] items-center gap-2 border-b border-white/10 px-5 py-4 last:border-b-0">
       <div className="min-w-0">
         <div className="flex items-center gap-2">
-          {active ? <span className="size-2 rounded-full bg-lime-300" aria-label="Winner" /> : null}
+          {active ? (
+            <span
+              className="size-2 rounded-full bg-lime-300"
+              aria-label="Winner"
+            />
+          ) : null}
           <p className="truncate text-lg font-bold tracking-tight">{name}</p>
         </div>
       </div>
-      <p className="text-right font-mono text-5xl font-black tracking-[-0.08em]">{points}</p>
+      <p className="text-right font-mono text-5xl font-black tracking-[-0.08em]">
+        {points}
+      </p>
     </div>
   );
 }
@@ -191,7 +207,12 @@ function ScoringScreen({
   const [cancelOpen, setCancelOpen] = useState(false);
   const now = useClock(true);
   const elapsedMs = now - match.startedAt;
-  const winnerName = match.winner === 'A' ? match.sideA : match.winner === 'B' ? match.sideB : null;
+  const winnerName =
+    match.winner === 'A'
+      ? match.sideA
+      : match.winner === 'B'
+        ? match.sideB
+        : null;
 
   return (
     <main className="min-h-dvh bg-[#0c2f24] text-white">
@@ -232,7 +253,9 @@ function ScoringScreen({
               <Trophy className="size-5" />
             </div>
             <div>
-              <p className="text-xs font-bold uppercase tracking-[0.12em] opacity-65">Match winner</p>
+              <p className="text-xs font-bold uppercase tracking-[0.12em] opacity-65">
+                Match winner
+              </p>
               <p className="text-lg font-black tracking-tight">{winnerName}</p>
             </div>
           </div>
@@ -246,8 +269,12 @@ function ScoringScreen({
               className="group flex min-h-32 items-center justify-between rounded-[30px] border border-white/10 bg-[#f4f6e9] px-6 text-left text-[#153629] shadow-[0_16px_38px_rgb(0_0_0/16%)] transition active:scale-[0.985] disabled:opacity-50"
             >
               <div className="min-w-0">
-                <p className="text-xs font-bold uppercase tracking-[0.14em] opacity-55">Add point</p>
-                <p className="mt-1 truncate text-2xl font-black tracking-[-0.035em]">{match.sideA}</p>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] opacity-55">
+                  Add point
+                </p>
+                <p className="mt-1 truncate text-2xl font-black tracking-[-0.035em]">
+                  {match.sideA}
+                </p>
               </div>
               <span className="grid size-16 shrink-0 place-items-center rounded-full bg-[#153629] text-white transition group-active:scale-95">
                 <Plus className="size-8" strokeWidth={2.8} />
@@ -262,8 +289,12 @@ function ScoringScreen({
               className="group flex min-h-32 items-center justify-between rounded-[30px] border border-white/12 bg-[#1f5944] px-6 text-left text-white shadow-[0_16px_38px_rgb(0_0_0/16%)] transition active:scale-[0.985] disabled:opacity-50"
             >
               <div className="min-w-0">
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/55">Add point</p>
-                <p className="mt-1 truncate text-2xl font-black tracking-[-0.035em]">{match.sideB}</p>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-white/55">
+                  Add point
+                </p>
+                <p className="mt-1 truncate text-2xl font-black tracking-[-0.035em]">
+                  {match.sideB}
+                </p>
               </div>
               <span className="grid size-16 shrink-0 place-items-center rounded-full bg-lime-300 text-[#153629] transition group-active:scale-95">
                 <Plus className="size-8" strokeWidth={2.8} />
@@ -272,7 +303,9 @@ function ScoringScreen({
           </section>
         )}
 
-        {error ? <p className="mt-3 px-2 text-sm font-medium text-red-300">{error}</p> : null}
+        {error ? (
+          <p className="mt-3 px-2 text-sm font-medium text-red-300">{error}</p>
+        ) : null}
 
         <div className="mt-4 grid grid-cols-2 gap-3">
           <Button
@@ -306,7 +339,11 @@ function ScoringScreen({
               </DialogTitle>
               <DialogClose
                 render={
-                  <Button variant="ghost" size="icon-sm" aria-label="Close finish dialog" />
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label="Close finish dialog"
+                  />
                 }
               >
                 <X className="size-4" />
@@ -344,7 +381,11 @@ function ScoringScreen({
               </DialogTitle>
               <DialogClose
                 render={
-                  <Button variant="ghost" size="icon-sm" aria-label="Close cancel dialog" />
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    aria-label="Close cancel dialog"
+                  />
                 }
               >
                 <X className="size-4" />
@@ -383,7 +424,7 @@ function HistoryScreen({
 }: {
   matches: Doc<'matches'>[];
   onBack: () => void;
-  onResume: () => void;
+  onResume: (matchId: Id<'matches'>) => void;
   onExport: (matchId: Id<'matches'>) => Promise<void>;
   exportingId: Id<'matches'> | null;
 }) {
@@ -420,12 +461,19 @@ function HistoryScreen({
         {matches.length === 0 ? (
           <div className="rounded-3xl border border-dashed bg-card/60 px-6 py-14 text-center">
             <p className="font-bold">No matches yet</p>
-            <p className="mt-1 text-sm text-muted-foreground">Start a match to create its timeline.</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Start a match to create its timeline.
+            </p>
           </div>
         ) : null}
 
         {matches.map((match) => {
-          const winner = match.winner === 'A' ? match.sideA : match.winner === 'B' ? match.sideB : null;
+          const winner =
+            match.winner === 'A'
+              ? match.sideA
+              : match.winner === 'B'
+                ? match.sideB
+                : null;
           return (
             <article
               key={match._id}
@@ -437,7 +485,10 @@ function HistoryScreen({
                     {dateFormat.format(new Date(match.startedAt))}
                   </p>
                   <h2 className="mt-2 truncate text-lg font-black tracking-tight">
-                    {match.sideA} <span className="font-medium text-muted-foreground">vs</span>{' '}
+                    {match.sideA}{' '}
+                    <span className="font-medium text-muted-foreground">
+                      vs
+                    </span>{' '}
                     {match.sideB}
                   </h2>
                   <p className="mt-1 text-sm font-semibold text-court">
@@ -452,7 +503,10 @@ function HistoryScreen({
 
               <div className="mt-5 border-t pt-4">
                 {match.status === 'live' ? (
-                  <Button className="w-full rounded-2xl" onClick={onResume}>
+                  <Button
+                    className="w-full rounded-2xl"
+                    onClick={() => onResume(match._id)}
+                  >
                     Resume scoring
                     <ArrowRight className="ml-auto size-4" />
                   </Button>
@@ -487,40 +541,152 @@ function HistoryScreen({
   );
 }
 
+function ResumeMatchDialog({
+  match,
+  busy,
+  error,
+  onContinue,
+  onDiscard,
+}: {
+  match: Doc<'matches'>;
+  busy: boolean;
+  error: string | null;
+  onContinue: () => void;
+  onDiscard: () => Promise<void>;
+}) {
+  return (
+    <Dialog open>
+      <DialogContent
+        showCloseButton={false}
+        className="gap-0 overflow-hidden rounded-3xl p-0 sm:max-w-sm"
+      >
+        <div className="p-5">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-black tracking-tight">
+              Continue this match?
+            </DialogTitle>
+            <DialogDescription className="pt-2 text-base leading-6">
+              {match.sideA} vs {match.sideB} is still live at {match.pointsA}-
+              {match.pointsB}.
+            </DialogDescription>
+          </DialogHeader>
+          {error ? (
+            <p className="mt-3 text-sm font-medium text-destructive">{error}</p>
+          ) : null}
+        </div>
+        <DialogFooter className="m-0 rounded-none p-5">
+          <Button variant="destructive" disabled={busy} onClick={onDiscard}>
+            Discard match
+          </Button>
+          <Button disabled={busy} onClick={onContinue}>
+            Continue match
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 export default function Home() {
   const convex = useConvex();
-  const matches = useQuery(api.matches.list);
+  const [storedMatchId, setStoredMatchId] = useState<Id<'matches'> | null>(
+    null,
+  );
+  const [activeMatchId, setActiveMatchId] = useState<Id<'matches'> | null>(
+    null,
+  );
+  const [view, setView] = useState<'main' | 'history'>('main');
+  const [storageReady, setStorageReady] = useState(false);
+  const matches = useQuery(
+    api.matches.list,
+    view === 'history' ? {} : 'skip',
+  );
+  const storedMatch = useQuery(
+    api.matches.get,
+    storedMatchId ? { matchId: storedMatchId } : 'skip',
+  );
   const startMatch = useMutation(api.matches.start);
   const undoPoint = useMutation(api.matches.undo);
   const cancelMatch = useMutation(api.matches.cancel);
   const finishMatch = useMutation(api.matches.finish);
   const addPoint = useMutation(api.matches.addPoint).withOptimisticUpdate(
     (localStore, args) => {
-      const current = localStore.getQuery(api.matches.list, {});
-      if (!current) return;
+      const queryArgs = { matchId: args.matchId };
+      const current = localStore.getQuery(api.matches.get, queryArgs);
+      if (!current || current.status !== 'live' || current.winner) return;
+      const next = scorePoint(scoreFromRecord(current), args.side);
       localStore.setQuery(
-        api.matches.list,
-        {},
-        current.map((match) => {
-          if (match._id !== args.matchId || match.status !== 'live' || match.winner) return match;
-          const next = scorePoint(scoreFromRecord(match), args.side);
-          return {
-            ...match,
-            pointsA: next.pointsA,
-            pointsB: next.pointsB,
-            winner: next.winner ?? undefined,
-            eventCount: match.eventCount + 1,
-          };
-        }),
+        api.matches.get,
+        queryArgs,
+        {
+          ...current,
+          pointsA: next.pointsA,
+          pointsB: next.pointsB,
+          winner: next.winner ?? undefined,
+          eventCount: current.eventCount + 1,
+        },
       );
     },
   );
 
-  const [view, setView] = useState<'main' | 'history'>('main');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [exportingId, setExportingId] = useState<Id<'matches'> | null>(null);
-  const liveMatch = matches?.find((match) => match.status === 'live');
+  const liveMatch =
+    storedMatch?._id === activeMatchId && storedMatch.status === 'live'
+      ? storedMatch
+      : undefined;
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      try {
+        window.localStorage.removeItem('badminton-scorer:match-history-ids');
+        setStoredMatchId(
+          window.localStorage.getItem(ACTIVE_MATCH_KEY) as Id<'matches'> | null,
+        );
+      } catch {
+        // A storage-disabled browser can still record a match for this session.
+      }
+      setStorageReady(true);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const rememberActiveMatch = (matchId: Id<'matches'>) => {
+    try {
+      window.localStorage.setItem(ACTIVE_MATCH_KEY, matchId);
+    } catch {
+      // The match still works for this session when storage is unavailable.
+    }
+    setStoredMatchId(matchId);
+    setActiveMatchId(matchId);
+  };
+
+  const forgetActiveMatch = () => {
+    try {
+      window.localStorage.removeItem(ACTIVE_MATCH_KEY);
+    } catch {
+      // State below still forgets the match for this session.
+    }
+    setStoredMatchId(null);
+    setActiveMatchId(null);
+  };
+
+  useEffect(() => {
+    if (!storedMatchId || storedMatch === undefined) return;
+    if (!storedMatch || storedMatch.status !== 'live') {
+      const timer = window.setTimeout(() => {
+        try {
+          window.localStorage.removeItem(ACTIVE_MATCH_KEY);
+        } catch {
+          // State below still removes a stale match for this session.
+        }
+        setStoredMatchId(null);
+        setActiveMatchId(null);
+      }, 0);
+      return () => window.clearTimeout(timer);
+    }
+  }, [storedMatch, storedMatchId]);
 
   const run = async (action: () => Promise<unknown>) => {
     setBusy(true);
@@ -528,13 +694,19 @@ export default function Home() {
     try {
       await action();
     } catch (caught) {
-      setError(caught instanceof Error ? caught.message : 'Something went wrong.');
+      setError(
+        caught instanceof Error ? caught.message : 'Something went wrong.',
+      );
     } finally {
       setBusy(false);
     }
   };
 
-  if (matches === undefined) {
+  if (
+    !storageReady ||
+    (storedMatchId && storedMatch === undefined) ||
+    (view === 'history' && matches === undefined)
+  ) {
     return (
       <main className="grid min-h-dvh place-items-center bg-background text-foreground">
         <div className="flex items-center gap-3 text-sm font-semibold text-muted-foreground">
@@ -548,20 +720,26 @@ export default function Home() {
   if (view === 'history') {
     return (
       <HistoryScreen
-        matches={matches}
+        matches={matches ?? []}
         onBack={() => setView('main')}
-        onResume={() => setView('main')}
+        onResume={(matchId) => {
+          rememberActiveMatch(matchId);
+          setView('main');
+        }}
         exportingId={exportingId}
         onExport={async (matchId) => {
           setExportingId(matchId);
           setError(null);
           try {
-            const data = await convex.query(api.matches.getForExport, { matchId });
+            const data = await convex.query(api.matches.getForExport, {
+              matchId,
+            });
             const srt = buildSrt({
               sideA: data.match.sideA,
               sideB: data.match.sideB,
               durationMs:
-                data.match.durationMs ?? Math.max(0, Date.now() - data.match.startedAt),
+                data.match.durationMs ??
+                Math.max(0, Date.now() - data.match.startedAt),
               events: data.events.map((event) => ({
                 pointsA: event.pointsA,
                 pointsB: event.pointsB,
@@ -570,7 +748,11 @@ export default function Home() {
             });
             downloadSrt(srtFilename(data.match.sideA, data.match.sideB), srt);
           } catch (caught) {
-            setError(caught instanceof Error ? caught.message : 'Could not export this match.');
+            setError(
+              caught instanceof Error
+                ? caught.message
+                : 'Could not export this match.',
+            );
           } finally {
             setExportingId(null);
           }
@@ -593,13 +775,18 @@ export default function Home() {
             elapsedMs: Date.now() - liveMatch.startedAt,
             eventId: crypto.randomUUID(),
           }).catch((caught) => {
-            setError(caught instanceof Error ? caught.message : 'The point was not saved.');
+            setError(
+              caught instanceof Error
+                ? caught.message
+                : 'The point was not saved.',
+            );
           });
         }}
         onUndo={() => run(() => undoPoint({ matchId: liveMatch._id }))}
         onCancel={() =>
           run(async () => {
             await cancelMatch({ matchId: liveMatch._id });
+            forgetActiveMatch();
             setView('main');
           })
         }
@@ -610,6 +797,7 @@ export default function Home() {
               matchId: liveMatch._id,
               durationMs: now - liveMatch.startedAt,
             });
+            forgetActiveMatch();
             setView('history');
           })
         }
@@ -618,19 +806,36 @@ export default function Home() {
   }
 
   return (
-    <SetupScreen
-      busy={busy}
-      error={error}
-      onHistory={() => setView('history')}
-      onStart={(sideA, sideB) =>
-        run(() =>
-          startMatch({
-            sideA,
-            sideB,
-            startedAt: Date.now(),
-          }),
-        )
-      }
-    />
+    <>
+      <SetupScreen
+        busy={busy}
+        error={error}
+        onHistory={() => setView('history')}
+        onStart={(sideA, sideB) =>
+          run(async () => {
+            const matchId = await startMatch({
+              sideA,
+              sideB,
+              startedAt: Date.now(),
+            });
+            rememberActiveMatch(matchId);
+          })
+        }
+      />
+      {storedMatch?.status === 'live' && !activeMatchId ? (
+        <ResumeMatchDialog
+          match={storedMatch}
+          busy={busy}
+          error={error}
+          onContinue={() => rememberActiveMatch(storedMatch._id)}
+          onDiscard={() =>
+            run(async () => {
+              await cancelMatch({ matchId: storedMatch._id });
+              forgetActiveMatch();
+            })
+          }
+        />
+      ) : null}
+    </>
   );
 }
