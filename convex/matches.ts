@@ -7,11 +7,8 @@ const sideValidator = v.union(v.literal('A'), v.literal('B'));
 
 function scoreFields(score: ReturnType<typeof scoreFromRecord>) {
   return {
-    gamesA: score.gamesA,
-    gamesB: score.gamesB,
     pointsA: score.pointsA,
     pointsB: score.pointsB,
-    gameComplete: score.gameComplete,
     ...(score.winner ? { winner: score.winner } : {}),
   };
 }
@@ -32,7 +29,6 @@ export const start = mutation({
     sideA: v.string(),
     sideB: v.string(),
     startedAt: v.number(),
-    eventId: v.string(),
   },
   handler: async (ctx, args) => {
     const sideA = args.sideA.trim().slice(0, 50);
@@ -56,10 +52,11 @@ export const start = mutation({
 
     await ctx.db.insert('scoreEvents', {
       matchId,
-      eventId: args.eventId,
+      eventId: `start:${matchId}`,
       sequence: 0,
       elapsedMs: 0,
-      ...scoreFields(INITIAL_SCORE),
+      pointsA: INITIAL_SCORE.pointsA,
+      pointsB: INITIAL_SCORE.pointsB,
     });
 
     return matchId;
@@ -106,7 +103,8 @@ export const addPoint = mutation({
       eventId: args.eventId,
       sequence,
       elapsedMs,
-      ...scoreFields(nextScore),
+      pointsA: nextScore.pointsA,
+      pointsB: nextScore.pointsB,
     });
   },
 });
@@ -127,12 +125,9 @@ export const undo = mutation({
     await ctx.db.delete(latest[0]._id);
     const previous = latest[1];
     await ctx.db.patch(match._id, {
-      gamesA: previous.gamesA,
-      gamesB: previous.gamesB,
       pointsA: previous.pointsA,
       pointsB: previous.pointsB,
-      gameComplete: previous.gameComplete,
-      winner: previous.winner,
+      winner: undefined,
       eventCount: match.eventCount - 1,
     });
     return previous;
@@ -140,7 +135,7 @@ export const undo = mutation({
 });
 
 export const finish = mutation({
-  args: { matchId: v.id('matches'), finishedAt: v.number(), durationMs: v.number() },
+  args: { matchId: v.id('matches'), durationMs: v.number() },
   handler: async (ctx, args) => {
     const match = await ctx.db.get(args.matchId);
     if (!match) throw new Error('Match not found.');
@@ -155,7 +150,6 @@ export const finish = mutation({
 
     await ctx.db.patch(match._id, {
       status: 'finished',
-      finishedAt: args.finishedAt,
       durationMs,
     });
     return match._id;

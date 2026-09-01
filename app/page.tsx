@@ -506,11 +506,8 @@ export default function Home() {
           const next = scorePoint(scoreFromRecord(match), args.side);
           return {
             ...match,
-            gamesA: next.gamesA,
-            gamesB: next.gamesB,
             pointsA: next.pointsA,
             pointsB: next.pointsB,
-            gameComplete: next.gameComplete,
             winner: next.winner ?? undefined,
             eventCount: match.eventCount + 1,
           };
@@ -566,7 +563,8 @@ export default function Home() {
               durationMs:
                 data.match.durationMs ?? Math.max(0, Date.now() - data.match.startedAt),
               events: data.events.map((event) => ({
-                ...scoreFromRecord(event),
+                pointsA: event.pointsA,
+                pointsB: event.pointsB,
                 elapsedMs: event.elapsedMs,
               })),
             });
@@ -607,11 +605,10 @@ export default function Home() {
         }
         onFinish={() =>
           run(async () => {
-            const finishedAt = Date.now();
+            const now = Date.now();
             await finishMatch({
               matchId: liveMatch._id,
-              finishedAt,
-              durationMs: finishedAt - liveMatch.startedAt,
+              durationMs: now - liveMatch.startedAt,
             });
             setView('history');
           })
@@ -631,7 +628,6 @@ export default function Home() {
             sideA,
             sideB,
             startedAt: Date.now(),
-            eventId: crypto.randomUUID(),
           }),
         )
       }

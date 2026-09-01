@@ -1,6 +1,4 @@
-import type { ScoreState } from './scoring';
-
-export type TimedScore = ScoreState & { elapsedMs: number };
+export type TimedScore = { pointsA: number; pointsB: number; elapsedMs: number };
 
 function pad(value: number, width = 2) {
   return String(value).padStart(width, '0');
