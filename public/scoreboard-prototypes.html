@@ -249,10 +249,8 @@
         background: rgba(255, 255, 255, 0.14);
       }
 
-      /* Approved motion families and their visual styles */
-      .roll .ghost,
-      .tile-flip .ghost,
-      .calendar-flip .ghost {
+      /* Option 2, with layout variations */
+      .roll .ghost {
         opacity: 0;
         animation: none;
       }
@@ -268,28 +266,8 @@
         transform: none;
       }
 
-      .roll .score {
-        backface-visibility: visible;
-      }
-
       .roll .next {
         opacity: 0;
-      }
-
-      .roll .score-window::after {
-        display: none;
-      }
-
-      .roll .is-playing .changing .score-stack,
-      .roll .is-playing .changing .score-window,
-      .roll .is-playing .changing .ghost {
-        opacity: 0;
-        animation: none;
-      }
-
-      .roll .is-playing .changing .score-stack,
-      .roll .is-playing .changing .score-window {
-        opacity: 1;
       }
 
       .roll .is-playing .changing .old {
@@ -318,32 +296,7 @@
         }
       }
 
-      .roll.variant-1 .board {
-        overflow: hidden;
-        border: 1px solid rgba(162, 225, 187, 0.33);
-        border-radius: 18px;
-        color: #edf8f1;
-        background: #071d14;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
-      }
-
-      .roll.variant-1 .team {
-        background: transparent;
-      }
-
-      .roll.variant-1 .divider {
-        background: rgba(255, 255, 255, 0.14);
-      }
-
-      .roll.variant-1 .score-window {
-        border: 0;
-        border-radius: 12px;
-        color: #edf8f1;
-        background: #123426;
-        box-shadow: inset 0 0 0 1px rgba(177, 238, 201, 0.12);
-      }
-
-      .roll.variant-2 .board {
+      .glass .board {
         overflow: hidden;
         border: 1px solid rgba(255, 255, 255, 0.42);
         border-radius: 26px;
@@ -353,15 +306,15 @@
         backdrop-filter: blur(14px);
       }
 
-      .roll.variant-2 .team {
+      .glass .team {
         background: transparent;
       }
 
-      .roll.variant-2 .divider {
+      .glass .divider {
         background: rgba(16, 39, 29, 0.15);
       }
 
-      .roll.variant-2 .score-window {
+      .glass .score-window {
         overflow: hidden;
         border: 1px solid rgba(11, 107, 69, 0.16);
         border-radius: 18px;
@@ -370,374 +323,144 @@
         box-shadow: 0 10px 24px rgba(7, 91, 60, 0.2);
       }
 
-      .roll.variant-3 .board {
-        overflow: hidden;
-        border: 0;
-        border-radius: 7px;
-        color: white;
-        background: #063b78;
-        box-shadow: 0 16px 40px rgba(0, 22, 54, 0.4);
+      .layout-1 .board,
+      .layout-6 .board {
+        width: min(100%, 350px);
+        grid-template-columns: 1fr;
       }
 
-      .roll.variant-3 .team {
-        background: transparent;
+      .layout-1 .divider,
+      .layout-6 .divider,
+      .layout-7 .divider {
+        width: auto;
+        height: 1px;
+        margin: 0 14px;
       }
 
-      .roll.variant-3 .team:first-child {
-        border-top: 5px solid #55d6ff;
+      .layout-3 .board {
+        width: min(100%, 390px);
       }
 
-      .roll.variant-3 .team:last-child {
-        border-top: 5px solid #ffc857;
+      .layout-3 .team {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
       }
 
-      .roll.variant-3 .divider {
-        background: rgba(255, 255, 255, 0.2);
+      .layout-3 .name {
+        width: 100%;
       }
 
-      .roll.variant-3 .score-window {
-        overflow: hidden;
-        border: 0;
-        border-radius: 2px;
-        color: white;
-        background: #052958;
-        box-shadow: none;
+      .layout-4 .team:last-child .score-window {
+        order: -1;
       }
 
-      .roll.variant-4 .board {
-        overflow: hidden;
-        border: 3px solid #efe0b8;
-        border-radius: 2px;
-        color: #f5e7c2;
-        background: #191713;
-        box-shadow:
-          7px 7px 0 #0b0a08,
-          0 18px 45px rgba(0, 0, 0, 0.36);
+      .layout-5 .team:first-child .score-window {
+        order: -1;
       }
 
-      .roll.variant-4 .team {
-        background: transparent;
+      .layout-6 .team {
+        grid-template-columns: 104px minmax(0, 1fr);
       }
 
-      .roll.variant-4 .name {
-        font-family: Georgia, serif;
-        letter-spacing: 0.12em;
+      .layout-6 .team .score-window {
+        order: -1;
       }
 
-      .roll.variant-4 .divider {
-        background: #665c48;
+      .layout-7 .board {
+        width: min(100%, 230px);
+        grid-template-columns: 1fr;
       }
 
-      .roll.variant-4 .score-window {
-        overflow: hidden;
-        border: 1px solid #665c48;
-        border-radius: 0;
-        color: #191713;
-        background: #efe0b8;
-        box-shadow: inset 0 0 18px rgba(79, 60, 25, 0.1);
+      .layout-7 .team {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
       }
 
-      .tile-flip .score-window {
-        overflow: visible;
-        perspective: 500px;
+      .layout-7 .name {
+        width: 100%;
       }
 
-      .tile-flip .score-stack {
-        transform-style: preserve-3d;
+      .layout-8 .board {
+        border-radius: 999px;
       }
 
-      .tile-flip .score {
-        backface-visibility: hidden;
+      .layout-8 .team {
+        grid-template-columns: minmax(0, 1fr) 74px;
+        padding: 8px 12px;
       }
 
-      .tile-flip .next {
-        opacity: 1;
-        transform: rotateX(180deg);
+      .layout-8 .score-window {
+        width: 74px;
+        height: 64px;
+        border-radius: 999px;
       }
 
-      .tile-flip .is-playing .changing .old,
-      .tile-flip .is-playing .changing .next {
-        animation: none;
+      .layout-8 .score {
+        font-size: 45px;
       }
 
-      .tile-flip .is-playing .changing .score-stack {
-        animation: whole-tile-flip 720ms cubic-bezier(0.4, 0, 0.18, 1) forwards;
+      .layout-9 .board,
+      .layout-10 .board {
+        width: min(100%, 390px);
+        grid-template-columns: 1fr 1fr;
+        gap: 10px 18px;
+        padding: 16px;
       }
 
-      @keyframes whole-tile-flip {
-        to {
-          transform: rotateX(-180deg);
-        }
+      .layout-9 .team,
+      .layout-10 .team {
+        display: contents;
       }
 
-      .tile-flip.variant-5 .board {
-        overflow: visible;
-        border: 0;
-        border-radius: 14px;
-        color: #fff4d9;
-        background: #161512;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.4);
-      }
-
-      .tile-flip.variant-5 .team {
-        background: linear-gradient(180deg, #24211c, #12110f);
-      }
-
-      .tile-flip.variant-5 .divider {
-        background: rgba(255, 255, 255, 0.14);
-      }
-
-      .tile-flip.variant-5 .score-stack,
-      .tile-flip.variant-5 .score {
-        border: 1px solid #514a3d;
-        border-radius: 10px;
-        color: #fff4d9;
-        background: #090908;
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.5);
-      }
-
-      .tile-flip.variant-6 .board {
-        overflow: visible;
-        border: 3px solid #f5ce3e;
-        border-radius: 8px;
-        color: #f8dc67;
-        background: #15150f;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.42);
-      }
-
-      .tile-flip.variant-6 .team {
-        background: transparent;
-      }
-
-      .tile-flip.variant-6 .divider {
-        background: rgba(245, 206, 62, 0.32);
-      }
-
-      .tile-flip.variant-6 .score-stack,
-      .tile-flip.variant-6 .score {
-        border: 0;
-        border-radius: 3px;
-        color: #111108;
-        background: #f5ce3e;
-        box-shadow: none;
-      }
-
-      .tile-flip.variant-7 .board {
-        overflow: visible;
-        border: 1px solid #d8ddd9;
-        border-radius: 16px;
-        color: #151917;
-        background: #f7f8f7;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
-      }
-
-      .tile-flip.variant-7 .team {
-        background: transparent;
-      }
-
-      .tile-flip.variant-7 .divider {
-        background: #d8ddd9;
-      }
-
-      .tile-flip.variant-7 .score-stack,
-      .tile-flip.variant-7 .score {
-        border: 1px solid #d8ddd9;
-        border-radius: 14px;
-        color: #151917;
-        background: #fff;
-        box-shadow: 0 9px 22px rgba(11, 22, 15, 0.1);
-      }
-
-      .tile-flip.variant-8 .board {
-        overflow: visible;
-        border: 4px solid #2b2525;
-        border-radius: 11px;
-        color: #a89b9b;
-        background:
-          repeating-linear-gradient(
-            0deg,
-            rgba(255, 255, 255, 0.025) 0 1px,
-            transparent 1px 4px
-          ),
-          #0b0909;
-        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.5);
-      }
-
-      .tile-flip.variant-8 .team {
-        background: transparent;
-      }
-
-      .tile-flip.variant-8 .divider {
-        background: rgba(255, 69, 63, 0.16);
-      }
-
-      .tile-flip.variant-8 .score-stack,
-      .tile-flip.variant-8 .score {
-        border: 0;
-        border-radius: 2px;
-        color: #ff453f;
-        background: #100a0a;
-        box-shadow: inset 0 0 18px rgba(255, 40, 35, 0.08);
-        font-family: 'Courier New', monospace;
-        text-shadow: 0 0 13px rgba(255, 61, 54, 0.8);
-      }
-
-      .tile-flip.variant-8 .score-window::after {
+      .layout-9 .divider,
+      .layout-10 .divider {
         display: none;
       }
 
-      .calendar-flip .board {
-        overflow: visible;
+      .layout-9 .name,
+      .layout-10 .name {
+        width: 100%;
+        text-align: center;
       }
 
-      .calendar-flip .score-window {
-        overflow: visible;
-        perspective: 620px;
+      .layout-9 .score-window,
+      .layout-10 .score-window {
+        justify-self: center;
       }
 
-      .calendar-flip .score-window::before,
-      .calendar-flip .score-window::after {
-        position: absolute;
-        z-index: 5;
-        top: -5px;
-        width: 9px;
-        height: 14px;
-        border: 2px solid currentColor;
-        border-bottom: 0;
-        border-radius: 6px 6px 0 0;
-        content: '';
-        opacity: 0.7;
+      .layout-9 .team:first-child .name {
+        grid-area: 1 / 1;
       }
 
-      .calendar-flip .score-window::before {
-        left: 25px;
+      .layout-9 .team:last-child .name {
+        grid-area: 1 / 2;
       }
 
-      .calendar-flip .score-window::after {
-        right: 25px;
+      .layout-9 .team:first-child .score-window {
+        grid-area: 2 / 1;
       }
 
-      .calendar-flip .score-stack {
-        transform-style: preserve-3d;
+      .layout-9 .team:last-child .score-window {
+        grid-area: 2 / 2;
       }
 
-      .calendar-flip .score {
-        border-radius: inherit;
-        backface-visibility: hidden;
+      .layout-10 .team:first-child .score-window {
+        grid-area: 1 / 1;
       }
 
-      .calendar-flip .next {
-        opacity: 1;
+      .layout-10 .team:last-child .score-window {
+        grid-area: 1 / 2;
       }
 
-      .calendar-flip .is-playing .changing .old {
-        z-index: 2;
-        animation: calendar-page-away 780ms cubic-bezier(0.5, 0, 0.22, 1)
-          forwards;
-        transform-origin: 50% 0;
+      .layout-10 .team:first-child .name {
+        grid-area: 2 / 1;
       }
 
-      .calendar-flip .is-playing .changing .next {
-        animation: calendar-page-reveal 780ms ease-out forwards;
+      .layout-10 .team:last-child .name {
+        grid-area: 2 / 2;
       }
-
-      .calendar-flip .is-playing .changing .score-window {
-        animation: none;
-      }
-
-      @keyframes calendar-page-away {
-        0% {
-          opacity: 1;
-          filter: brightness(1);
-          transform: rotateX(0deg);
-        }
-        70% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-          filter: brightness(0.72);
-          transform: rotateX(112deg) translateY(-4px);
-        }
-      }
-
-      @keyframes calendar-page-reveal {
-        0%,
-        42% {
-          filter: brightness(0.72);
-          transform: scale(0.97);
-        }
-        100% {
-          filter: brightness(1);
-          transform: scale(1);
-        }
-      }
-
-      .calendar-flip.variant-9 .board {
-        border: 1px solid #3e7560;
-        border-radius: 12px;
-        color: #b6ebd0;
-        background: #09251a;
-        box-shadow:
-          8px 8px 0 #06150f,
-          0 18px 45px rgba(0, 0, 0, 0.32);
-      }
-
-      .calendar-flip.variant-9 .team {
-        background: transparent;
-      }
-
-      .calendar-flip.variant-9 .divider {
-        background: #3e7560;
-      }
-
-      .calendar-flip.variant-9 .score-window {
-        border: 0;
-        border-radius: 4px 4px 10px 10px;
-        color: #18452f;
-        background: transparent;
-      }
-
-      .calendar-flip.variant-9 .score {
-        border-top: 8px solid #b6ebd0;
-        color: #123523;
-        background: #effaf3;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.28);
-      }
-
-      .calendar-flip.variant-10 .board {
-        border: 2px solid #70492c;
-        border-radius: 6px;
-        color: #372718;
-        background: #e2bc82;
-        box-shadow: 0 18px 45px rgba(41, 19, 4, 0.38);
-      }
-
-      .calendar-flip.variant-10 .team {
-        background: linear-gradient(180deg, #efce99, #d4a96e);
-      }
-
-      .calendar-flip.variant-10 .divider {
-        background: rgba(64, 34, 10, 0.28);
-      }
-
-      .calendar-flip.variant-10 .score-window {
-        border: 0;
-        border-radius: 3px 3px 9px 9px;
-        color: #6e4323;
-        background: transparent;
-      }
-
-      .calendar-flip.variant-10 .score {
-        border-top: 8px solid #b8372c;
-        color: #25170c;
-        background:
-          linear-gradient(rgba(105, 68, 35, 0.06) 1px, transparent 1px), #fff5db;
-        background-size: 100% 18px;
-        box-shadow: 0 8px 18px rgba(74, 38, 10, 0.3);
-        font-family: Georgia, serif;
-      }
-
       @media (max-width: 900px) {
         .grid {
           grid-template-columns: 1fr;
@@ -795,111 +518,110 @@
     <main class="page">
       <div class="topbar">
         <div>
-          <h1>Choose the scoreboard style.</h1>
+          <h1>Choose the glass scoreboard layout.</h1>
           <p class="intro">
-            Options 1 to 4 use the vertical roll. Options 5 to 8 flip the whole
-            score tile. Options 9 and 10 turn a complete calendar page. Only
-            Manu's score moves.
+            Every card uses the style and vertical-roll animation from option 2.
+            Card 2 is unchanged. Only the arrangement changes.
           </p>
         </div>
         <button class="replay-all" type="button">Replay all</button>
       </div>
 
       <section class="grid" aria-label="Scoreboard animation prototypes">
-        <article class="prototype variant-1 roll" data-score="12">
+        <article class="prototype glass roll layout-1" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">1</span> Broadcast roll
+              <span class="number">1</span> Stacked rows
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-2 roll" data-score="12">
+        <article class="prototype glass roll layout-2" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">2</span> Glass roll
+              <span class="number">2</span> Original glass layout
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-3 roll" data-score="12">
+        <article class="prototype glass roll layout-3" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">3</span> Blue sports roll
+              <span class="number">3</span> Names above
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-4 roll" data-score="12">
+        <article class="prototype glass roll layout-4" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">4</span> Classic roll
+              <span class="number">4</span> Scores together
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-5 tile-flip" data-score="12">
+        <article class="prototype glass roll layout-5" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">5</span> Mechanical tile flip
+              <span class="number">5</span> Scores outside
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-6 tile-flip" data-score="12">
+        <article class="prototype glass roll layout-6" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">6</span> Yellow tile flip
+              <span class="number">6</span> Score-first rows
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-7 tile-flip" data-score="12">
+        <article class="prototype glass roll layout-7" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">7</span> Minimal tile flip
+              <span class="number">7</span> Vertical cards
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-8 tile-flip" data-score="12">
+        <article class="prototype glass roll layout-8" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">8</span> LED tile flip
+              <span class="number">8</span> Compact pill
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-9 calendar-flip" data-score="12">
+        <article class="prototype glass roll layout-9" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">9</span> Green calendar
+              <span class="number">9</span> Header labels
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
           <div class="stage"></div>
         </article>
 
-        <article class="prototype variant-10 calendar-flip" data-score="12">
+        <article class="prototype glass roll layout-10" data-score="12">
           <header class="prototype-head">
             <h2 class="prototype-title">
-              <span class="number">10</span> Paper calendar
+              <span class="number">10</span> Labels below
             </h2>
             <button class="replay-one" type="button">Replay</button>
           </header>
