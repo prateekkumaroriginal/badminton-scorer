@@ -11,6 +11,7 @@ import {
   RotateCcw,
   Trophy,
   Upload,
+  Video,
   X,
 } from 'lucide-react';
 import { useConvex, useMutation, useQuery } from 'convex/react';
@@ -355,7 +356,8 @@ function ScoringScreen({
               </DialogClose>
             </DialogHeader>
             <DialogDescription className="mt-4 text-base leading-6">
-              The timer will stop and the score will be ready to export as SRT.
+              The timer will stop and the score will be ready to export as SRT
+              or video.
             </DialogDescription>
           </div>
           <DialogFooter className="m-0 rounded-none p-5">
@@ -425,13 +427,19 @@ function HistoryScreen({
   onBack,
   onResume,
   onExport,
+  onVideoExport,
   exportingId,
+  videoExport,
+  exportError,
 }: {
   matches: Doc<'matches'>[];
   onBack: () => void;
   onResume: (matchId: Id<'matches'>) => void;
   onExport: (matchId: Id<'matches'>, format: SubtitleFormat) => Promise<void>;
+  onVideoExport: (matchId: Id<'matches'>) => Promise<void>;
   exportingId: Id<'matches'> | null;
+  videoExport: { matchId: Id<'matches'>; progress: number } | null;
+  exportError: string | null;
 }) {
   const [exportMatchId, setExportMatchId] = useState<Id<'matches'> | null>(
     null,
@@ -467,6 +475,12 @@ function HistoryScreen({
       </header>
 
       <section className="space-y-3 pt-8">
+        {exportError ? (
+          <p className="rounded-2xl bg-destructive/10 px-4 py-3 text-sm font-medium text-destructive">
+            {exportError}
+          </p>
+        ) : null}
+
         {matches.length === 0 ? (
           <div className="rounded-3xl border border-dashed bg-card/60 px-6 py-14 text-center">
             <p className="font-bold">No matches yet</p>
@@ -520,19 +534,42 @@ function HistoryScreen({
                     <ArrowRight className="ml-auto size-4" />
                   </Button>
                 ) : (
-                  <Button
-                    variant="outline"
-                    className="w-full rounded-2xl bg-transparent"
-                    disabled={exportingId === match._id}
-                    onClick={() => setExportMatchId(match._id)}
-                  >
-                    {exportingId === match._id ? (
-                      <LoaderCircle className="size-4 animate-spin" />
-                    ) : (
-                      <Upload className="size-4" />
-                    )}
-                    Export Filmora SRT
-                  </Button>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <Button
+                      variant="outline"
+                      className="w-full rounded-2xl bg-transparent"
+                      disabled={
+                        exportingId === match._id ||
+                        videoExport?.matchId === match._id
+                      }
+                      onClick={() => setExportMatchId(match._id)}
+                    >
+                      {exportingId === match._id ? (
+                        <LoaderCircle className="size-4 animate-spin" />
+                      ) : (
+                        <Upload className="size-4" />
+                      )}
+                      Export SRT
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="w-full rounded-2xl bg-transparent"
+                      disabled={
+                        videoExport?.matchId === match._id ||
+                        exportingId === match._id
+                      }
+                      onClick={() => void onVideoExport(match._id)}
+                    >
+                      {videoExport?.matchId === match._id ? (
+                        <LoaderCircle className="size-4 animate-spin" />
+                      ) : (
+                        <Video className="size-4" />
+                      )}
+                      {videoExport?.matchId === match._id
+                        ? `Rendering ${Math.round(videoExport.progress * 100)}%`
+                        : 'Export Video'}
+                    </Button>
+                  </div>
                 )}
               </div>
             </article>
@@ -711,6 +748,10 @@ export default function Home() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [exportingId, setExportingId] = useState<Id<'matches'> | null>(null);
+  const [videoExport, setVideoExport] = useState<{
+    matchId: Id<'matches'>;
+    progress: number;
+  } | null>(null);
   const liveMatch =
     storedMatch?._id === activeMatchId && storedMatch.status === 'live'
       ? storedMatch
@@ -806,6 +847,41 @@ export default function Home() {
           setView('main');
         }}
         exportingId={exportingId}
+        videoExport={videoExport}
+        exportError={error}
+        onVideoExport={async (matchId) => {
+          setVideoExport({ matchId, progress: 0 });
+          setError(null);
+          try {
+            const data = await convex.query(api.matches.getForExport, {
+              matchId,
+            });
+            const { exportScoreVideo } = await import('@/lib/video');
+            await exportScoreVideo(
+              {
+                sideA: data.match.sideA,
+                sideB: data.match.sideB,
+                durationMs:
+                  data.match.durationMs ??
+                  Math.max(0, Date.now() - data.match.startedAt),
+                events: data.events.map((event) => ({
+                  pointsA: event.pointsA,
+                  pointsB: event.pointsB,
+                  elapsedMs: event.elapsedMs,
+                })),
+              },
+              (progress) => setVideoExport({ matchId, progress }),
+            );
+          } catch (caught) {
+            setError(
+              caught instanceof Error
+                ? caught.message
+                : 'Could not export this video.',
+            );
+          } finally {
+            setVideoExport(null);
+          }
+        }}
         onExport={async (matchId, format) => {
           setExportingId(matchId);
           setError(null);

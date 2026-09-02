@@ -19,7 +19,8 @@ const deploymentHost =
 export const metadata: Metadata = {
   metadataBase: new URL(deploymentHost ? `https://${deploymentHost}` : 'http://localhost:3000'),
   title: 'Badminton Scorer',
-  description: 'Record badminton scores and export a timed SRT track for Filmora.',
+  description:
+    'Record badminton scores and export a timed SRT or video overlay for Filmora.',
   openGraph: {
     title: 'Rallyframe',
     description: 'Badminton scoring, timed for Filmora',
