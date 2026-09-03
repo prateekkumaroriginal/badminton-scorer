@@ -1,8 +1,24 @@
 import { describe, expect, it } from 'vitest';
 
-import { buildScoreVideoFramePlan, scoreVideoFilename } from './video';
+import {
+  buildScoreVideoFramePlan,
+  fitLabel,
+  scoreVideoFilename,
+} from './video';
 
 describe('score video export', () => {
+  it('wraps labels to two lines and truncates any remaining text', () => {
+    const context = {
+      measureText: (text: string) => ({ width: text.length * 10 }),
+    } as CanvasRenderingContext2D;
+
+    expect(fitLabel(context, 'Tushar & Prateek Sharma', 100)).toEqual([
+      'TUSHAR &',
+      'PRATEEK S…',
+    ]);
+    expect(fitLabel(context, 'Monu & Sparsh', 200)).toEqual(['MONU & SPARSH']);
+  });
+
   it('keeps static spans sparse and animates each score change', () => {
     const frames = buildScoreVideoFramePlan(
       [

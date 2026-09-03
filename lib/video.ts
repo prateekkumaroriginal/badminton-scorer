@@ -35,20 +35,61 @@ function padScore(value: number) {
   return String(value).padStart(2, '0');
 }
 
-function fitLabel(
+export function fitLabel(
+  context: CanvasRenderingContext2D,
+  label: string,
+  maxWidth: number,
+): string[] {
+  const words = label
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((word) => word.toLocaleUpperCase());
+  if (words.length === 0) return [''];
+
+  const fullLabel = words.join(' ');
+  if (context.measureText(fullLabel).width <= maxWidth) return [fullLabel];
+
+  let currentLine = '';
+  let splitIndex = 0;
+
+  for (const [index, word] of words.entries()) {
+    const candidate = currentLine ? `${currentLine} ${word}` : word;
+    if (context.measureText(candidate).width <= maxWidth) {
+      currentLine = candidate;
+      splitIndex = index + 1;
+      continue;
+    }
+    break;
+  }
+
+  if (!currentLine) {
+    currentLine = truncateLabel(context, words[0], maxWidth);
+    splitIndex = 1;
+  }
+
+  const remainingLabel = words.slice(splitIndex).join(' ');
+  if (!remainingLabel) return [currentLine];
+
+  return [
+    currentLine,
+    context.measureText(remainingLabel).width <= maxWidth
+      ? remainingLabel
+      : truncateLabel(context, remainingLabel, maxWidth),
+  ];
+}
+
+function truncateLabel(
   context: CanvasRenderingContext2D,
   label: string,
   maxWidth: number,
 ) {
-  const upper = label.toLocaleUpperCase();
-  if (context.measureText(upper).width <= maxWidth) return upper;
-
-  let shortened = upper;
+  let shortened = label.trimEnd();
   while (
-    shortened.length > 1 &&
+    shortened.length > 0 &&
     context.measureText(`${shortened}…`).width > maxWidth
   ) {
-    shortened = shortened.slice(0, -1);
+    shortened = shortened.slice(0, -1).trimEnd();
   }
   return `${shortened}…`;
 }
@@ -184,16 +225,22 @@ function drawScoreboard(
   context.textAlign = 'center';
   context.textBaseline = 'middle';
 
-  context.fillText(
-    fitLabel(context, sideA, columnWidth),
-    firstX + columnWidth / 2,
-    91,
-  );
-  context.fillText(
-    fitLabel(context, sideB, columnWidth),
-    secondX + columnWidth / 2,
-    91,
-  );
+  const sideALines = fitLabel(context, sideA, columnWidth);
+  for (const [index, line] of sideALines.entries()) {
+    context.fillText(
+      line,
+      firstX + columnWidth / 2,
+      91 + (index - (sideALines.length - 1) / 2) * 34,
+    );
+  }
+  const sideBLines = fitLabel(context, sideB, columnWidth);
+  for (const [index, line] of sideBLines.entries()) {
+    context.fillText(
+      line,
+      secondX + columnWidth / 2,
+      91 + (index - (sideBLines.length - 1) / 2) * 34,
+    );
+  }
 
   drawScore(
     context,
